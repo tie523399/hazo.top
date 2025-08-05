@@ -48,7 +48,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('admin_token');
-      window.location.href = '/admin/login';
+      // 檢查當前路徑，如果在管理員頁面就導航到管理員登錄頁面，否則導航到首頁
+      if (window.location.pathname.startsWith('/admin')) {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }

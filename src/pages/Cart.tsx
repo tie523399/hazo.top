@@ -220,7 +220,19 @@ const Cart: React.FC = () => {
   const calculateTotals = () => {
     const subtotal = totalAmount;
     const shippingFee = subtotal >= freeShippingThreshold ? 0 : 60;
-    const discount = appliedCoupon?.discountAmount || 0;
+    
+    // 重新計算優惠碼折扣金額，而不是使用靜態的 discountAmount
+    let discount = 0;
+    if (appliedCoupon && appliedCoupon.coupon) {
+      if (appliedCoupon.coupon.type === 'percentage') {
+        discount = Math.round((subtotal * appliedCoupon.coupon.value / 100) * 100) / 100;
+      } else if (appliedCoupon.coupon.type === 'fixed') {
+        discount = appliedCoupon.coupon.value;
+      }
+      // 確保折扣不超過小計
+      discount = Math.min(discount, subtotal);
+    }
+    
     const finalTotal = Math.max(0, subtotal + shippingFee - discount);
     
     return {
