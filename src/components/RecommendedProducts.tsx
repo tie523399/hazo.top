@@ -91,8 +91,9 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
     setAddingToCart(product.id);
 
     try {
-      const response = await cartAPI.addToCart(sessionId, {
-        product_id: product.id,
+      const response = await cartAPI.addToCart({
+        sessionId: sessionId,
+        productId: product.id,
         quantity: 1
       });
 

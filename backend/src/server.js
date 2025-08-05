@@ -259,6 +259,14 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
 
 
+    // 檢查是否需要創建示例商品（生產環境一次性操作）
+    if (process.env.SETUP_DEMO_PRODUCTS === 'true') {
+      console.log('🌊 檢測到示例商品創建標記，執行創建...');
+      const setupDemo = require('./scripts/setup-basic-demo.js');
+      await setupDemo();
+      console.log('🎯 示例商品創建完成，請設置 SETUP_DEMO_PRODUCTS=false 防止重複創建');
+    }
+
     // 檢查產品數據狀態（僅顯示信息，不自動恢復）
     const { dbAsync } = require('./database/db');
     const row = await dbAsync.get('SELECT COUNT(*) as count FROM products');
