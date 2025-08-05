@@ -17,12 +17,27 @@ import {
   KeyRound,
   ChevronRight,
   Home,
-  Boxes
+  Boxes,
+  ChevronDown,
+  FileText,
+  ShoppingBag,
+  Tag,
+  Globe,
+  Users,
+  Megaphone
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { adminAPI, categoriesAPI, homepageAPI, pageContentsAPI, getDashboardStats, getImages } from "@/lib/api";
 import { useAdminStore, Product } from '@/lib/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
 
 // 導入拆分的組件
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -314,41 +329,147 @@ const AdminPage: React.FC = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-10">
-          <TabsTrigger value="dashboard">
-            <Package className="mr-2 h-4 w-4"/>儀表板
-          </TabsTrigger>
-          <TabsTrigger value="homepage">
-            <Home className="mr-2 h-4 w-4"/>首頁
-          </TabsTrigger>
-          <TabsTrigger value="footer">
-            🦶頁腳
-          </TabsTrigger>
-          <TabsTrigger value="products">
-            <Boxes className="mr-2 h-4 w-4"/>產品
-          </TabsTrigger>
-          <TabsTrigger value="categories">
-            <ChevronRight className="mr-2 h-4 w-4"/>分類
-          </TabsTrigger>
-          <TabsTrigger value="variants">
-            <Wrench className="mr-2 h-4 w-4"/>變體
-          </TabsTrigger>
-          <TabsTrigger value="coupons">
-            <Ticket className="mr-2 h-4 w-4"/>優惠券
-          </TabsTrigger>
-          <TabsTrigger value="announcements">
-            <Siren className="mr-2 h-4 w-4"/>公告
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings className="mr-2 h-4 w-4"/>設置
-          </TabsTrigger>
-          <TabsTrigger value="page-contents">
-            📄頁面內容
-          </TabsTrigger>
-          <TabsTrigger value="admins">
-            <KeyRound className="mr-2 h-4 w-4"/>管理員
-          </TabsTrigger>
-        </TabsList>
+        {/* 下拉選單導航欄 */}
+        <div className="flex flex-wrap gap-2 sm:gap-4 p-3 sm:p-4 bg-white border rounded-lg shadow-sm mb-6">
+          {/* 儀表板 */}
+          <Button
+            variant={activeTab === 'dashboard' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('dashboard')}
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            size="sm"
+          >
+            <Package className="h-4 w-4" />
+            儀表板
+          </Button>
+
+          {/* 內容管理 */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={['homepage', 'footer', 'page-contents', 'announcements'].includes(activeTab) ? 'default' : 'outline'}
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                size="sm"
+              >
+                <FileText className="h-4 w-4" />
+                內容管理
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setActiveTab('homepage')}>
+                <Home className="mr-2 h-4 w-4" />
+                首頁管理
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('footer')}>
+                <Globe className="mr-2 h-4 w-4" />
+                頁腳管理
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('page-contents')}>
+                <FileText className="mr-2 h-4 w-4" />
+                頁面內容
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('announcements')}>
+                <Megaphone className="mr-2 h-4 w-4" />
+                公告管理
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* 商品管理 */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={['products', 'categories', 'variants'].includes(activeTab) ? 'default' : 'outline'}
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                size="sm"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                商品管理
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setActiveTab('products')}>
+                <Boxes className="mr-2 h-4 w-4" />
+                商品管理
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('categories')}>
+                <Tag className="mr-2 h-4 w-4" />
+                分類管理
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('variants')}>
+                <Wrench className="mr-2 h-4 w-4" />
+                變體管理
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* 營銷工具 */}
+          <Button
+            variant={activeTab === 'coupons' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('coupons')}
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            size="sm"
+          >
+            <Ticket className="h-4 w-4" />
+            優惠券
+          </Button>
+
+          {/* 系統管理 */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={['settings', 'admins'].includes(activeTab) ? 'default' : 'outline'}
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                size="sm"
+              >
+                <Settings className="h-4 w-4" />
+                系統管理
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setActiveTab('settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                系統設置
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('admins')}>
+                <Users className="mr-2 h-4 w-4" />
+                管理員
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* 當前頁面標題 */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {activeTab === 'dashboard' && '📊 管理儀表板'}
+            {activeTab === 'homepage' && '🏠 首頁內容管理'}
+            {activeTab === 'footer' && '🦶 頁腳內容管理'}
+            {activeTab === 'products' && '📦 商品管理'}
+            {activeTab === 'categories' && '🏷️ 分類管理'}
+            {activeTab === 'variants' && '🔧 變體管理'}
+            {activeTab === 'coupons' && '🎫 優惠券管理'}
+            {activeTab === 'announcements' && '📢 公告管理'}
+            {activeTab === 'settings' && '⚙️ 系統設置'}
+            {activeTab === 'page-contents' && '📄 頁面內容管理'}
+            {activeTab === 'admins' && '👥 管理員管理'}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {activeTab === 'dashboard' && '查看網站整體運營數據和統計信息'}
+            {activeTab === 'homepage' && '管理首頁的輪播圖、推薦商品和各區塊內容'}
+            {activeTab === 'footer' && '設置網站頁腳的公司信息、功能特色和聯絡方式'}
+            {activeTab === 'products' && '新增、編輯和管理商品資訊、圖片和規格'}
+            {activeTab === 'categories' && '管理商品分類的層級結構和顯示設置'}
+            {activeTab === 'variants' && '設置商品的不同規格選項和價格差異'}
+            {activeTab === 'coupons' && '創建和管理優惠券、折扣碼和促銷活動'}
+            {activeTab === 'announcements' && '發布網站公告和重要通知信息'}
+            {activeTab === 'settings' && '配置系統參數、支付設置和網站基本信息'}
+            {activeTab === 'page-contents' && '管理靜態頁面內容，如關於我們、服務條款等'}
+            {activeTab === 'admins' && '管理後台用戶權限和帳號設置'}
+          </p>
+        </div>
         
         <TabsContent value="dashboard" className="mt-6">
           <AdminDashboard
