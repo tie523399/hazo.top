@@ -23,8 +23,14 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    // 使用原始文件名
-    cb(null, Buffer.from(file.originalname, 'latin1').toString('utf8'));
+    // 生成唯一文件名：時間戳 + 隨機數 + 原始副檔名
+    const timestamp = Date.now();
+    const randomNum = Math.floor(Math.random() * 10000);
+    const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    const ext = path.extname(originalName);
+    const baseName = path.basename(originalName, ext);
+    const uniqueFilename = `${timestamp}-${randomNum}-${baseName}${ext}`;
+    cb(null, uniqueFilename);
   }
 });
 
@@ -1052,6 +1058,15 @@ router.post('/products/:id/images', authenticateToken, async (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `, [productId, image_url, alt_text, display_order, is_primary ? 1 : 0]);
     
+    // 如果設為主圖，同時更新商品表的 image_url 字段
+    if (is_primary) {
+      await dbAsync.run(`
+        UPDATE products 
+        SET image_url = ? 
+        WHERE id = ?
+      `, [image_url, productId]);
+    }
+    
     res.json({ 
       success: true, 
       message: '圖片添加成功',
@@ -1084,6 +1099,15 @@ router.put('/products/:id/images/:imageId', authenticateToken, async (req, res) 
       WHERE id = ? AND product_id = ?
     `, [image_url, alt_text, display_order, is_primary ? 1 : 0, imageId, productId]);
     
+    // 如果設為主圖，同時更新商品表的 image_url 字段
+    if (is_primary && image_url) {
+      await dbAsync.run(`
+        UPDATE products 
+        SET image_url = ? 
+        WHERE id = ?
+      `, [image_url, productId]);
+    }
+    
     res.json({ success: true, message: '圖片更新成功' });
   } catch (error) {
     console.error('更新產品圖片失敗:', error);
@@ -1096,10 +1120,50 @@ router.delete('/products/:id/images/:imageId', authenticateToken, async (req, re
   try {
     const { id: productId, imageId } = req.params;
     
+    // 先檢查要刪除的圖片是否為主圖
+    const imageToDelete = await dbAsync.get(`
+      SELECT is_primary FROM product_images 
+      WHERE id = ? AND product_id = ?
+    `, [imageId, productId]);
+    
     await dbAsync.run(`
       DELETE FROM product_images 
       WHERE id = ? AND product_id = ?
     `, [imageId, productId]);
+    
+    // 如果刪除的是主圖，需要重新設置主圖
+    if (imageToDelete && imageToDelete.is_primary) {
+      // 查找下一張圖片作為主圖
+      const nextPrimaryImage = await dbAsync.get(`
+        SELECT image_url FROM product_images 
+        WHERE product_id = ? 
+        ORDER BY display_order ASC 
+        LIMIT 1
+      `, [productId]);
+      
+      if (nextPrimaryImage) {
+        // 設置新的主圖
+        await dbAsync.run(`
+          UPDATE product_images 
+          SET is_primary = 1 
+          WHERE product_id = ? AND image_url = ?
+        `, [productId, nextPrimaryImage.image_url]);
+        
+        // 更新商品表的 image_url
+        await dbAsync.run(`
+          UPDATE products 
+          SET image_url = ? 
+          WHERE id = ?
+        `, [nextPrimaryImage.image_url, productId]);
+      } else {
+        // 沒有其他圖片，清空商品表的 image_url
+        await dbAsync.run(`
+          UPDATE products 
+          SET image_url = '' 
+          WHERE id = ?
+        `, [productId]);
+      }
+    }
     
     res.json({ success: true, message: '圖片刪除成功' });
   } catch (error) {
