@@ -93,7 +93,15 @@ app.use('/api', sitemapRouter);
 
 // 靜態文件服務 - 在API路由之後
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-app.use('/images', express.static(path.join(__dirname, '../../public/images')));
+
+// 圖片服務 - 根據環境選擇正確的路徑
+if (NODE_ENV === 'production') {
+  // 生產環境：圖片在 dist/images 目錄
+  app.use('/images', express.static(path.join(__dirname, '../../dist/images')));
+} else {
+  // 開發環境：圖片在 public/images 目錄
+  app.use('/images', express.static(path.join(__dirname, '../../public/images')));
+}
 
 // 生產環境下服務前端靜態文件
 if (NODE_ENV === 'production') {
