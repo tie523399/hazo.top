@@ -255,9 +255,11 @@ const Products: React.FC = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全部分類</SelectItem>
-              <SelectItem value="host">主機</SelectItem>
-              <SelectItem value="cartridge">煙彈</SelectItem>
-              <SelectItem value="disposable">拋棄式</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.slug} value={category.slug}>
+                  {category.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
