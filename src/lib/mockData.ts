@@ -10,110 +10,17 @@ const flavors = [
 // 顏色選項
 const colors = ['黑色', '白色', '銀色', '藍色', '紅色', '金色'];
 
-// 生成產品數據
+// 生成產品數據 - 已移除所有靜態產品，改為完全動態管理
 const generateProducts = (): Product[] => {
-  const products: Product[] = [];
-  let productId = 1;
-
-  // 主機產品（9個產品）
-  const hostBrands = ['JUUL', 'IQOS', 'Vaporesso'];
-  for (const brand of hostBrands) {
-    for (let i = 0; i < 3; i++) {
-      const colorSet = colors.slice(i * 2, i * 2 + 3);
-      const productName = `${brand} 主機`;
-      const price = 1500 + Math.random() * 1000;
-      
-      products.push({
-        id: productId,
-        name: productName,
-        category: 'host',
-        brand,
-        price: Math.round(price),
-        description: `${brand} 品牌主機，高品質電子煙設備，支持多種煙彈。`,
-        image_url: `/images/hosts/${brand.toLowerCase()}-${i + 1}.jpg`,
-        stock: 50 + Math.floor(Math.random() * 50),
-        created_at: new Date().toISOString(),
-        variants: colorSet.map((color, index) => ({
-          id: productId * 10 + index,
-          product_id: productId,
-          variant_type: 'color',
-          variant_value: color,
-          stock: 20 + Math.floor(Math.random() * 30),
-          price_modifier: index * 100
-        }))
-      });
-
-      productId++;
-    }
-  }
-
-  // 煙彈產品（90個產品）
-  const cartridgeBrands = ['JUUL', 'IQOS', 'Vaporesso'];
-  for (const brand of cartridgeBrands) {
-    for (const flavor of flavors) {
-      const productName = `${brand} ${flavor}煙彈`;
-      const price = 300 + Math.random() * 200;
-      
-      products.push({
-        id: productId,
-        name: productName,
-        category: 'cartridge',
-        brand,
-        price: Math.round(price),
-        description: `${brand} ${flavor}口味煙彈，純正口感，適合${brand}主機使用。`,
-        image_url: `/images/cartridges/${brand.toLowerCase()}-${flavor}.jpg`,
-        stock: 30 + Math.floor(Math.random() * 70),
-        created_at: new Date().toISOString(),
-        variants: []
-      });
-
-      productId++;
-    }
-  }
-
-  // 拋棄式電子煙產品（90個產品）
-  const disposableBrands = ['Puff Bar', 'Hyde', 'Elf Bar'];
-  for (const brand of disposableBrands) {
-    for (const flavor of flavors) {
-      const productName = `${brand} ${flavor}拋棄式電子煙`;
-      const price = 200 + Math.random() * 150;
-      
-      products.push({
-        id: productId,
-        name: productName,
-        category: 'disposable',
-        brand,
-        price: Math.round(price),
-        description: `${brand} ${flavor}口味拋棄式電子煙，即開即用，攜帶方便。`,
-        image_url: `/images/disposables/${brand.replace(' ', '').toLowerCase()}-${flavor}.jpg`,
-        stock: 20 + Math.floor(Math.random() * 80),
-        created_at: new Date().toISOString(),
-        variants: []
-      });
-
-      productId++;
-    }
-  }
-
-  return products;
+  // 不再產生任何模擬產品，確保只顯示後台管理的真實產品
+  return [];
 };
 
-// 生成分類數據
-export const mockCategories = [
-  { category: 'host', count: 9 },
-  { category: 'cartridge', count: 90 },
-  { category: 'disposable', count: 90 }
-];
+// 生成分類數據 - 已移除靜態分類，改為完全動態管理
+export const mockCategories: any[] = [];
 
-// 生成品牌數據
-export const mockBrands = [
-  { brand: 'JUUL', count: 33 },
-  { brand: 'IQOS', count: 33 },
-  { brand: 'Vaporesso', count: 33 },
-  { brand: 'Puff Bar', count: 30 },
-  { brand: 'Hyde', count: 30 },
-  { brand: 'Elf Bar', count: 30 }
-];
+// 生成品牌數據 - 已移除靜態品牌，改為完全動態管理
+export const mockBrands: any[] = [];
 
 // 生成優惠券數據
 export const mockCoupons: Coupon[] = [
@@ -186,7 +93,7 @@ export const mockAnnouncements: Announcement[] = [
 // 主要的產品數據
 export const mockProducts = generateProducts();
 
-// 搜索產品
+// 搜索產品 - 已停用模擬數據，只返回空結果
 export const searchProducts = (params: {
   category?: string;
   brand?: string;
@@ -194,48 +101,22 @@ export const searchProducts = (params: {
   page?: number;
   limit?: number;
 }) => {
-  let filtered = [...mockProducts];
-
-  // 分類篩選
-  if (params.category) {
-    filtered = filtered.filter(p => p.category === params.category);
-  }
-
-  // 品牌篩選
-  if (params.brand) {
-    filtered = filtered.filter(p => p.brand === params.brand);
-  }
-
-  // 搜索篩選
-  if (params.search) {
-    const searchLower = params.search.toLowerCase();
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(searchLower) ||
-      p.description.toLowerCase().includes(searchLower)
-    );
-  }
-
-  // 分頁
-  const page = params.page || 1;
-  const limit = params.limit || 12;
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const paginatedProducts = filtered.slice(startIndex, endIndex);
-
+  // 不再使用模擬產品，確保只顯示後台管理的真實產品
   return {
-    products: paginatedProducts,
+    products: [],
     pagination: {
-      page,
-      limit,
-      total: filtered.length,
-      pages: Math.ceil(filtered.length / limit)
+      page: params.page || 1,
+      limit: params.limit || 12,
+      total: 0,
+      pages: 0
     }
   };
 };
 
-// 根據ID獲取產品
+// 根據ID獲取產品 - 已停用模擬數據
 export const getProductById = (id: string): Product | undefined => {
-  return mockProducts.find(p => p.id === parseInt(id));
+  // 不再使用模擬產品，直接返回undefined
+  return undefined;
 };
 
 // 驗證優惠券

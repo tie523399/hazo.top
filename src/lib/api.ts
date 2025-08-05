@@ -69,16 +69,15 @@ export const productsAPI = {
       console.log('產品數據請求成功');
       return response;
     } catch (error: any) {
-      console.error('API 請求失敗，切換到模擬數據:', error.message);
+      console.error('API 請求失敗:', error.message);
       
-      // 如果是超時或網絡錯誤，使用 mock 數據
-      if (error.code === 'ECONNABORTED' || error.code === 'NETWORK_ERROR' || error.response?.status >= 500) {
-        const result = searchProducts(params || {});
-        return { data: result };
-      }
-      
-      // 其他錯誤重新拋出
-      throw error;
+      // 不再使用模擬數據，直接返回空結果
+      return { 
+        data: { 
+          products: [], 
+          pagination: { pages: 0, current: 1, total: 0 } 
+        } 
+      };
     }
   },
   
@@ -86,10 +85,8 @@ export const productsAPI = {
     try {
       return await api.get(`/products/${id}`);
     } catch (error) {
-      console.warn('API 不可用，使用模擬數據:', error);
-      const product = getProductById(id);
-      if (!product) throw new Error('產品不存在');
-      return { data: product };
+      console.error('API 請求失敗:', error);
+      throw new Error('產品不存在');
     }
   },
   
@@ -103,11 +100,8 @@ export const productsAPI = {
     try {
       return await api.get('/products/categories/list');
     } catch (error: any) {
-      console.error('分類 API 請求失敗，使用模擬數據:', error.message);
-      if (error.code === 'ECONNABORTED' || error.code === 'NETWORK_ERROR' || error.response?.status >= 500) {
-        return { data: mockCategories };
-      }
-      throw error;
+      console.error('分類 API 請求失敗:', error.message);
+      return { data: [] };
     }
   },
   
@@ -115,22 +109,8 @@ export const productsAPI = {
     try {
       return await api.get('/products/brands/list', { params: { category } });
     } catch (error: any) {
-      console.error('品牌 API 請求失敗，使用模擬數據:', error.message);
-      if (error.code === 'ECONNABORTED' || error.code === 'NETWORK_ERROR' || error.response?.status >= 500) {
-        let brands = mockBrands;
-        if (category) {
-          // 根據分類過濾品牌
-          if (category === 'host') {
-            brands = mockBrands.filter(b => ['JUUL', 'IQOS', 'Vaporesso'].includes(b.brand));
-          } else if (category === 'cartridge') {
-            brands = mockBrands.filter(b => ['JUUL', 'IQOS', 'Vaporesso'].includes(b.brand));
-          } else if (category === 'disposable') {
-            brands = mockBrands.filter(b => ['Puff Bar', 'Hyde', 'Elf Bar'].includes(b.brand));
-          }
-        }
-        return { data: brands };
-      }
-      throw error;
+      console.error('品牌 API 請求失敗:', error.message);
+      return { data: [] };
     }
   },
 };
