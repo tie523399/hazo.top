@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Pencil, Trash2, Plus, Save } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { pageContentsAPI } from "@/lib/api";
 
 // 類型定義
 interface PageContent {
@@ -100,23 +101,10 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
         metadata: parsedMetadata
       };
 
-      const response = await fetch(
-        editingContent 
-          ? `/api/page-contents/admin/${editingContent.id}`
-          : '/api/page-contents/admin',
-        {
-          method: editingContent ? 'PUT' : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-          },
-          body: JSON.stringify(formData)
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '操作失敗');
+      if (editingContent) {
+        await pageContentsAPI.updatePageContent(editingContent.id, formData);
+      } else {
+        await pageContentsAPI.createPageContent(formData);
       }
 
       toast({ 
@@ -140,17 +128,7 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
     if (!window.confirm(`確定要刪除「${pageName}」嗎？`)) return;
     
     try {
-      const response = await fetch(`/api/page-contents/admin/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '刪除失敗');
-      }
+      await pageContentsAPI.deletePageContent(id);
 
       toast({ 
         title: '頁面內容已刪除', 
