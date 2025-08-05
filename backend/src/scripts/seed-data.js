@@ -9,44 +9,24 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const { db, dbAsync } = require('../database/db');
 
-// 30種口味
-const flavors = [
-  '草莓', '芒果', '薄荷', '煙草', '香草', '藍莓', '蘋果', '西瓜', '葡萄', '櫻桃',
-  '檸檬', '橘子', '桃子', '椰子', '咖啡', '巧克力', '蜂蜜', '奶油', '玫瑰', '薰衣草',
-  '青檸', '柚子', '荔枝', '龍眼', '榴蓮', '百香果', '奇異果', '鳳梨', '葡萄柚', '覆盆子'
-];
+// 商品相關的靜態資料已移除，改為動態管理
+// 如需要口味和顏色選項，請通過後台管理系統的產品變體功能添加
 
-// 顏色選項
-const colors = ['黑色', '白色', '銀色', '藍色', '紅色', '金色'];
+// ============================================================================
+// 注意：靜態商品數據已移除，改為使用動態後台管理
+// 如需添加商品，請使用後台管理系統
+// ============================================================================
 
-const products = [
-  // ... (產品數據保持不變)
-];
+const products = [];
 
 const seed = async () => {
   try {
     console.log('⏳ 開始填充種子數據...');
     await dbAsync.run('BEGIN TRANSACTION');
 
-    // 填充產品和變體
-    for (const product of products) {
-      const { variants, ...productData } = product;
-      const result = await dbAsync.run(
-        'INSERT INTO products (name, category, brand, price, description, image_url, stock) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [productData.name, productData.category, productData.brand, productData.price, productData.description, productData.image_url, productData.stock]
-      );
-      const productId = result.lastID;
-
-      if (variants && variants.length > 0) {
-        for (const variant of variants) {
-          await dbAsync.run(
-            'INSERT INTO product_variants (product_id, variant_type, variant_value, stock, price_modifier) VALUES (?, ?, ?, ?, ?)',
-            [productId, variant.variant_type, variant.variant_value, variant.stock, variant.price_modifier || 0]
-          );
-        }
-      }
-    }
-    console.log('✅ 產品數據填充完成');
+    // 商品數據已完全改為動態管理 - 移除靜態商品邏輯
+    console.log('ℹ️  商品和分類已改為完全動態管理');
+    console.log('💡 請使用後台管理系統添加商品和分類');
 
     // ... (其他數據填充邏輯保持不變)
 

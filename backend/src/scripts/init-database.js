@@ -138,7 +138,7 @@ const createTables = async () => {
       ('show_product_preview', 'true'),
       ('site_logo_url', '/images/logo-simple.svg'),
       ('site_favicon_url', '/favicon.svg'),
-      ('site_title', 'HAZO')
+      ('site_title', '海量國際')
     `);
 
     // 首頁設置表
@@ -266,24 +266,8 @@ const initializeDatabase = async () => {
       console.log('✅ 默認管理員已創建。');
     }
     
-    // 檢查並創建默認分類
-    const categoryRow = await dbAsync.get('SELECT COUNT(*) as count FROM categories');
-    if (categoryRow.count === 0) {
-      console.log('📁 檢測到無產品分類，正在創建默認分類...');
-      const defaultCategories = [
-        { name: '主機', slug: 'host', description: '電子煙主機設備', display_order: 1 },
-        { name: '煙彈', slug: 'cartridge', description: '替換煙彈', display_order: 2 },
-        { name: '拋棄式', slug: 'disposable', description: '一次性電子煙', display_order: 3 }
-      ];
-      
-      for (const category of defaultCategories) {
-        await dbAsync.run(
-          'INSERT INTO categories (name, slug, description, display_order) VALUES (?, ?, ?, ?)',
-          [category.name, category.slug, category.description, category.display_order]
-        );
-      }
-      console.log('✅ 默認分類已創建。');
-    }
+    // 商品分類改為完全動態管理 - 不再創建默認分類
+    console.log('📁 商品分類已改為動態管理，請通過後台添加分類');
     
     // 檢查並創建默認首頁設置
     const homepageRow = await dbAsync.get('SELECT COUNT(*) as count FROM homepage_settings');
@@ -292,10 +276,10 @@ const initializeDatabase = async () => {
       const defaultSettings = [
         {
           section: 'hero',
-          image_url: '/images/sergey-fediv-x1w4399HA74-unsplash.jpg',
-          title: 'HAZO',
+          image_url: '/images/ocean-logo-1.gif',
+          title: '海量國際',
           subtitle: '海洋品質 • 深度體驗',
-          content: '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。HAZO 為您帶來最專業的電子煙產品與服務。',
+          content: '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。海量國際為您帶來最專業的電子煙產品與服務。',
           button_text: '探索產品',
           button_link: '/products',
           display_order: 1,
@@ -303,30 +287,30 @@ const initializeDatabase = async () => {
         },
         {
           section: 'hero1',
-          image_url: '/images/sp2_device_main_showcase.jpg',
-          title: 'SP2 系列',
+          image_url: '/images/whale-company-logo.png',
+          title: '海量品質',
           subtitle: '極致工藝，完美體驗',
-          content: '採用航空級鋁合金材質，結合先進的溫控技術，為您帶來最純淨的霧化體驗。每一口都是享受。',
+          content: '採用航空級品質標準，結合先進的技術工藝，為您帶來最純淨的產品體驗。每一個細節都是品質的保證。',
           button_text: '立即探索',
-          button_link: 'host',
+          button_link: '/products',
           display_order: 2,
           is_active: 1
         },
         {
           section: 'hero2',
-          image_url: '/images/ilia_fabric_device_main.png',
-          title: 'Ilia 系列',
+          image_url: '/images/ocean-logo-2.gif',
+          title: '國際品牌',
           subtitle: '時尚設計，品味生活',
-          content: '融合現代美學與頂尖科技，Ilia 系列不僅是電子煙，更是您生活品味的象徵。精工細作，只為懂得品味的您。',
+          content: '融合現代美學與頂尖科技，海量國際不僅提供優質產品，更是您生活品味的象徵。精工細作，只為懂得品味的您。',
           button_text: '立即探索',
-          button_link: 'cartridge',
+          button_link: '/products',
           display_order: 3,
           is_active: 1
         },
         {
           section: 'hero_main',
-          image_url: '/images/20250710_1007_Desert Skateboarding Adventure_simple_compose_01jzs1d0rkfrktap14za68myeg.gif',
-          title: 'HAZO 主圖',
+          image_url: '/images/ocean-logo-1.gif',
+          title: '海量國際 主圖',
           subtitle: '首頁主要展示圖片',
           content: '首頁輪播主圖設置',
           button_text: null,
@@ -394,9 +378,9 @@ const initializeDatabase = async () => {
       const defaultFooterSettings = [
         {
           section: 'company_info',
-          title: 'HAZO',
-          content: 'HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。',
-          image_url: '/images/logo-simple.svg',
+          title: '海量國際',
+          content: '海量國際致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。',
+          image_url: '/images/whale-company-logo.png',
           display_order: 1,
           is_active: 1
         },
@@ -449,7 +433,7 @@ const initializeDatabase = async () => {
         {
           section: 'contact_email',
           title: '電子郵箱',
-          content: 'service@hazo.com.tw',
+          content: 'service@oceanic-intl.com.tw',
           icon_name: 'Mail',
           display_order: 8,
           is_active: 1
@@ -475,7 +459,7 @@ const initializeDatabase = async () => {
         {
           section: 'copyright',
           title: '版權資訊',
-          content: '© 2024 HAZO. 版權所有。',
+          content: '© 2024 海量國際. 版權所有。',
           display_order: 11,
           is_active: 1
         },
@@ -578,7 +562,7 @@ const initializeDatabase = async () => {
             contactInfo: {
               title: '聯絡資訊',
               description: '如有任何問題，歡迎聯絡我們：',
-              email: 'service@hazo.com.tw',
+              email: 'service@oceanic-intl.com.tw',
               phone: '02-1234-5678',
               hours: '週一至週五 9:00-18:00'
             }
