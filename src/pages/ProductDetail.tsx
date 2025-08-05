@@ -27,6 +27,28 @@ const ProductDetail: React.FC = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  // 獲取產品圖片 - 處理image_url和images兩種情況
+  const getProductImages = (product: Product) => {
+    // 如果有完整的images數組，直接使用
+    if (product.images && product.images.length > 0) {
+      return product.images;
+    }
+    
+    // 如果只有image_url，創建包含主圖的數組
+    if (product.image_url && product.image_url.trim() !== '') {
+      return [{
+        id: 0,
+        product_id: product.id,
+        image_url: product.image_url,
+        alt_text: product.name,
+        display_order: 1,
+        is_primary: true
+      }];
+    }
+    
+    // 如果什麼都沒有，返回空數組（會使用placeholder）
+    return [];
+  };
 
   // 庫存狀態判斷函數
   const getStockStatus = (stock: number) => {
@@ -235,7 +257,7 @@ const ProductDetail: React.FC = () => {
                     {/* 產品圖片區域 */}
         <div className="relative">
             <ProductImageCarousel
-              images={product.images || []}
+              images={getProductImages(product)}
               productName={product.name}
             />
             
