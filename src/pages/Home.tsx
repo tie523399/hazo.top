@@ -138,7 +138,7 @@ const Home: React.FC = () => {
       subtitle: homepageSettings.hero1.subtitle || '極致工藝，完美體驗',
       content: homepageSettings.hero1.content,
       image: homepageSettings.hero1.image_url || '/images/sp2_device_main_showcase.jpg',
-      category: 'host',
+      category: homepageSettings.hero1.button_link || 'host',
       gradient: 'from-slate-900/70 via-blue-900/60 to-cyan-900/70',
       accentColor: 'cyan',
       is_active: homepageSettings.hero1.is_active
@@ -148,7 +148,7 @@ const Home: React.FC = () => {
       subtitle: homepageSettings.hero2.subtitle || '時尚設計，品味生活',
       content: homepageSettings.hero2.content,
       image: homepageSettings.hero2.image_url || '/images/ilia_fabric_device_main.png',
-      category: 'cartridge',
+      category: homepageSettings.hero2.button_link || 'cartridge',
       gradient: 'from-purple-900/70 via-indigo-900/60 to-blue-900/70',
       accentColor: 'indigo',
       is_active: homepageSettings.hero2.is_active

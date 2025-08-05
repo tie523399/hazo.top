@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Waves, Clock, Shield } from 'lucide-react';
+import { categoriesAPI } from '@/lib/api';
 
 const Footer: React.FC = () => {
+  const [categories, setCategories] = useState<any[]>([]);
+
+  // 獲取分類數據
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoriesAPI.getCategories();
+        setCategories(response.data.filter((cat: any) => cat.is_active)
+          .sort((a: any, b: any) => a.display_order - b.display_order));
+      } catch (error) {
+        console.error('獲取分類失敗:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <style dangerouslySetInnerHTML={{
@@ -52,19 +69,20 @@ const Footer: React.FC = () => {
           }
           
           .footer-section-title {
-            color: var(--ocean-pearl-white);
             font-weight: 600;
-            font-size: 1.125rem;
+            color: var(--ocean-pearl-white);
+            font-size: 1.1rem;
             margin-bottom: 1rem;
             position: relative;
+            padding-bottom: 0.5rem;
           }
           
           .footer-section-title::after {
             content: '';
             position: absolute;
-            bottom: -4px;
+            bottom: 0;
             left: 0;
-            width: 30px;
+            width: 40px;
             height: 2px;
             background: var(--ocean-sea-green);
           }
@@ -72,8 +90,8 @@ const Footer: React.FC = () => {
           .footer-link {
             color: rgba(245, 246, 245, 0.8);
             transition: all 0.3s ease;
-            display: block;
-            padding: 0.25rem 0;
+            display: inline-block;
+            position: relative;
           }
           
           .footer-link:hover {
@@ -81,77 +99,82 @@ const Footer: React.FC = () => {
             transform: translateX(4px);
           }
           
-          .footer-social-icon {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--ocean-pearl-white);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-          }
-          
-          .footer-social-icon:hover {
-            background: var(--ocean-sea-green);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(46, 196, 182, 0.3);
-          }
-          
           .footer-contact-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 0.75rem;
+            gap: 0.75rem;
             color: rgba(245, 246, 245, 0.9);
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+          }
+          
+          .footer-contact-item:hover {
+            color: var(--ocean-sea-green);
           }
           
           .footer-contact-icon {
-            background: var(--ocean-sea-green);
-            color: white;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            color: var(--ocean-sea-green);
+            flex-shrink: 0;
+          }
+          
+          .footer-social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+          }
+          
+          .footer-social-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: rgba(245, 246, 245, 0.1);
+            border-radius: 50%;
+            color: rgba(245, 246, 245, 0.8);
+            transition: all 0.3s ease;
+          }
+          
+          .footer-social-link:hover {
+            background: var(--ocean-sea-green);
+            color: var(--ocean-pearl-white);
+            transform: translateY(-2px);
           }
           
           .footer-bottom {
             background: rgba(30, 58, 138, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(75, 156, 211, 0.2);
+            backdrop-filter: blur(10px);
           }
           
-          .age-verification-notice {
-            background: linear-gradient(135deg, var(--ocean-coral-orange), var(--ocean-sand-gold));
-            border: 1px solid rgba(255, 111, 97, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            position: relative;
-            overflow: hidden;
+          .footer-features {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
           }
           
-          .age-verification-notice::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,0 L100,100 M100,0 L0,100' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
-            background-size: 20px 20px;
-            opacity: 0.3;
+          .footer-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(245, 246, 245, 0.9);
+            font-size: 0.875rem;
           }
           
-          .age-verification-text {
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            position: relative;
-            z-index: 1;
+          .footer-feature-icon {
+            color: var(--ocean-sea-green);
+            flex-shrink: 0;
+          }
+          
+          @media (max-width: 768px) {
+            .footer-features {
+              gap: 1rem;
+            }
+            
+            .footer-feature {
+              font-size: 0.8rem;
+            }
           }
         `
       }} />
@@ -159,157 +182,151 @@ const Footer: React.FC = () => {
       <footer className="ocean-footer">
         <div className="footer-wave-pattern"></div>
         
-        <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
+        <div className="container mx-auto px-4 py-12 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div className="space-y-4">
               <div className="hazo-footer-logo">
-                <Waves className="footer-wave-icon" size={24} />
+                <Waves className="footer-wave-icon" size={20} />
                 <span>HAZO</span>
               </div>
-              <p className="text-sm text-gray-200 leading-relaxed">
-                HAZO 專業的電子煙線上商城，提供各種品牌的高品質電子煙產品。
-              我們致力於為顧客提供最好的購物體驗和優質的客戶服務。
-            </p>
-              <div className="flex space-x-3 pt-4">
-                <a href="#" className="footer-social-icon">
+              <p className="text-sm leading-relaxed opacity-90">
+                HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。
+              </p>
+              
+              <div className="footer-features">
+                <div className="footer-feature">
+                  <Shield className="footer-feature-icon" size={16} />
+                  <span>正品保證</span>
+                </div>
+                <div className="footer-feature">
+                  <Clock className="footer-feature-icon" size={16} />
+                  <span>快速配送</span>
+                </div>
+              </div>
+
+              <div className="footer-social-links">
+                <a href="#" className="footer-social-link" aria-label="Facebook">
                   <Facebook size={18} />
                 </a>
-                <a href="#" className="footer-social-icon">
+                <a href="#" className="footer-social-link" aria-label="Twitter">
                   <Twitter size={18} />
                 </a>
-                <a href="#" className="footer-social-icon">
+                <a href="#" className="footer-social-link" aria-label="Instagram">
                   <Instagram size={18} />
                 </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div className="space-y-4">
+              <h3 className="footer-section-title">快速連結</h3>
+              <ul className="space-y-1">
+                <li>
+                  <Link to="/" className="footer-link text-sm">
+                    首頁
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/products" className="footer-link text-sm">
+                    所有商品
+                  </Link>
+                </li>
+                {/* 動態分類連結 */}
+                {categories.slice(0, 4).map((category) => (
+                  <li key={category.slug}>
+                    <Link 
+                      to={`/products?category=${category.slug}`} 
+                      className="footer-link text-sm"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Customer Service */}
+            <div className="space-y-4">
+              <h3 className="footer-section-title">客戶服務</h3>
+              <ul className="space-y-1">
+                <li>
+                  <Link to="/shipping" className="footer-link text-sm">
+                    配送說明
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/returns" className="footer-link text-sm">
+                    退換貨政策
+                  </Link>
+                </li>
+                <li>
+                  <a href="#" className="footer-link text-sm">
+                    常見問題
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="footer-link text-sm">
+                    聯絡客服
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="footer-link text-sm">
+                    產品保固
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div className="space-y-4">
+              <h3 className="footer-section-title">聯絡我們</h3>
+              <div className="space-y-3">
+                <div className="footer-contact-item">
+                  <Phone className="footer-contact-icon" size={16} />
+                  <span className="text-sm">02-1234-5678</span>
+                </div>
+                <div className="footer-contact-item">
+                  <Mail className="footer-contact-icon" size={16} />
+                  <span className="text-sm">service@hazo.com.tw</span>
+                </div>
+                <div className="footer-contact-item">
+                  <MapPin className="footer-contact-icon" size={16} />
+                  <span className="text-sm">台北市信義區松高路</span>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-black/20 rounded-lg">
+                <div className="text-sm font-medium mb-1">營業時間</div>
+                <div className="text-xs opacity-90">
+                  週一至週五：09:00-18:00<br />
+                  週六週日：10:00-17:00
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-              <h3 className="footer-section-title">快速連結</h3>
-              <ul className="space-y-1">
-              <li>
-                  <Link to="/" className="footer-link text-sm">
-                  首頁
-                </Link>
-              </li>
-              <li>
-                  <Link to="/products" className="footer-link text-sm">
-                  所有商品
-                </Link>
-              </li>
-              <li>
-                  <Link to="/products?category=host" className="footer-link text-sm">
-                  電子煙主機
-                </Link>
-              </li>
-              <li>
-                  <Link to="/products?category=cartridge" className="footer-link text-sm">
-                    煙彈系列
-                </Link>
-              </li>
-              <li>
-                  <Link to="/products?category=disposable" className="footer-link text-sm">
-                  拋棄式電子煙
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Customer Service */}
-          <div className="space-y-4">
-              <h3 className="footer-section-title">客戶服務</h3>
-              <ul className="space-y-1">
-              <li>
-                  <Link to="/help" className="footer-link text-sm">
-                  幫助中心
-                </Link>
-              </li>
-              <li>
-                  <Link to="/shipping" className="footer-link text-sm">
-                  配送說明
-                </Link>
-              </li>
-              <li>
-                  <Link to="/returns" className="footer-link text-sm">
-                  退換貨政策
-                </Link>
-              </li>
-              <li>
-                  <Link to="/privacy" className="footer-link text-sm">
-                  隱私政策
-                </Link>
-              </li>
-              <li>
-                  <Link to="/terms" className="footer-link text-sm">
-                  服務條款
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div className="space-y-4">
-              <h3 className="footer-section-title">聯絡資訊</h3>
-            <div className="space-y-3">
-                <div className="footer-contact-item">
-                  <div className="footer-contact-icon">
-                    <span className="text-xs font-bold">LINE</span>
-                  </div>
-                  <span className="text-sm">@hazo-vape</span>
-                </div>
-                <div className="footer-contact-item">
-                  <div className="footer-contact-icon">
-                    <Mail size={14} />
-                  </div>
-                  <span className="text-sm">support@hazo.com</span>
-                </div>
-                <div className="footer-contact-item">
-                  <div className="footer-contact-icon">
-                    <Clock size={14} />
-                  </div>
-                  <div className="text-sm">
-                    <div>服務時間</div>
-                    <div className="text-xs text-gray-300">週一至週日 (全年無休)</div>
-                  </div>
+          {/* Bottom Section */}
+          <div className="footer-bottom mt-12 pt-6 border-t border-white/20">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div className="text-sm opacity-80 text-center md:text-left">
+                © 2024 HAZO. 版權所有。
               </div>
-              </div>
+              <div className="flex space-x-6 text-sm">
+                <a href="#" className="footer-link">隱私政策</a>
+                <a href="#" className="footer-link">服務條款</a>
+                <a href="#" className="footer-link">Cookie 政策</a>
               </div>
             </div>
             
-          {/* Age Verification Notice */}
-          <div className="age-verification-notice">
-            <div className="flex items-center justify-center gap-3">
-              <Shield className="text-white" size={24} />
-              <p className="age-verification-text text-sm">
-                ⚠️ 重要提醒：本網站銷售的電子煙產品含有尼古丁，未滿18歲禁止購買和使用。請負責任地使用電子煙產品。
+            <div className="mt-4 text-center">
+              <p className="text-xs opacity-70">
+                本網站僅供18歲以上成年人使用。電子煙含有尼古丁，使用前請詳閱產品說明。
               </p>
             </div>
           </div>
         </div>
-
-        {/* Bottom Section */}
-        <div className="footer-bottom">
-          <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-sm text-gray-300">
-                © 2025 HAZO. 版權所有.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-                <Link to="/privacy" className="footer-link text-sm">
-                隱私政策
-              </Link>
-                <Link to="/terms" className="footer-link text-sm">
-                服務條款
-              </Link>
-                <Link to="/sitemap" className="footer-link text-sm">
-                網站地圖
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
     </>
   );
 };

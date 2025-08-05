@@ -287,8 +287,8 @@ const initializeDatabase = async () => {
           title: 'SP2 系列',
           subtitle: '極致工藝，完美體驗',
           content: '採用航空級鋁合金材質，結合先進的溫控技術，為您帶來最純淨的霧化體驗。每一口都是享受。',
-          button_text: null,
-          button_link: null,
+          button_text: '立即探索',
+          button_link: 'host',
           display_order: 2,
           is_active: 1
         },
@@ -298,8 +298,8 @@ const initializeDatabase = async () => {
           title: 'Ilia 系列',
           subtitle: '時尚設計，品味生活',
           content: '融合現代美學與頂尖科技，Ilia 系列不僅是電子煙，更是您生活品味的象徵。精工細作，只為懂得品味的您。',
-          button_text: null,
-          button_link: null,
+          button_text: '立即探索',
+          button_link: 'cartridge',
           display_order: 3,
           is_active: 1
         },

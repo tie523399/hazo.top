@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, Plus, Trash2, Edit } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { homepageAPI, uploadImage, getImages } from "@/lib/api";
+import { homepageAPI, uploadImage, getImages, categoriesAPI } from "@/lib/api";
 
 interface HomepageSetting {
   id?: number;
@@ -60,6 +60,21 @@ const HomepageManagement: React.FC<HomepageManagementProps> = ({
   const [editingHomepage, setEditingHomepage] = useState<string>('hero');
   const [homepageForm, setHomepageForm] = useState<Partial<HomepageSetting>>({});
   const [featuresData, setFeaturesData] = useState<Feature[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  // 獲取分類數據
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoriesAPI.getCategories();
+        setCategories(response.data.filter((cat: any) => cat.is_active)
+          .sort((a: any, b: any) => a.display_order - b.display_order));
+      } catch (error) {
+        console.error('獲取分類失敗:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // 當選擇的編輯區塊改變時更新表單
   useEffect(() => {
@@ -258,12 +273,35 @@ const HomepageManagement: React.FC<HomepageManagementProps> = ({
                     </div>
                     
                     <div>
-                      <Label>按鈕連結</Label>
-                      <Input 
-                        value={homepageForm.button_link || ''} 
-                        onChange={(e) => setHomepageForm({...homepageForm, button_link: e.target.value})} 
-                        placeholder="如：/products" 
-                      />
+                      <Label>
+                        {(editingHomepage === 'hero1' || editingHomepage === 'hero2') 
+                          ? '產品分類' 
+                          : '按鈕連結'
+                        }
+                      </Label>
+                      {(editingHomepage === 'hero1' || editingHomepage === 'hero2') ? (
+                        <Select 
+                          value={homepageForm.button_link || ''} 
+                          onValueChange={(value) => setHomepageForm({...homepageForm, button_link: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="選擇產品分類" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category.slug} value={category.slug}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input 
+                          value={homepageForm.button_link || ''} 
+                          onChange={(e) => setHomepageForm({...homepageForm, button_link: e.target.value})} 
+                          placeholder="如：/products" 
+                        />
+                      )}
                     </div>
                   </>
                 )}
