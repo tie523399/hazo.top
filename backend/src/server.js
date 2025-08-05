@@ -61,8 +61,15 @@ app.use((req, res, next) => {
   );
   
   // Cache Control 設置
-  if (req.url.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg)$/)) {
+  if (req.url.match(/\.(css|js)$/)) {
+    // CSS 和 JS 文件長期緩存
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (req.url.match(/\.(png|jpg|jpeg|gif|ico|svg)$/) && req.url.includes('/images/')) {
+    // 用戶上傳的圖片使用較短緩存，支持更新
+    res.setHeader('Cache-Control', 'public, max-age=3600'); // 1小時緩存
+  } else if (req.url.match(/\.(png|jpg|jpeg|gif|ico|svg)$/)) {
+    // 其他靜態圖片資源正常緩存
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // 1天緩存
   } else if (req.url.startsWith('/api/')) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');

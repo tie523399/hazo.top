@@ -195,7 +195,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               
               {/* Product Image - 直接顯示商品本身的主圖 */}
               <img
-                src={product.image_url || '/images/placeholder.jpg'}
+                src={product.image_url ? `${product.image_url}?v=${product.id}` : '/images/placeholder.jpg'}
                 alt={product.name}
                 className={cn(
                   "h-full w-full object-cover transition-all duration-700",
@@ -204,6 +204,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 )}
                 onLoad={() => setImageLoaded(true)}
                 onError={(e) => {
+                  console.error('商品圖片載入失敗:', product.image_url);
                   e.currentTarget.src = '/images/placeholder.jpg';
                   setImageLoaded(true);
                 }}

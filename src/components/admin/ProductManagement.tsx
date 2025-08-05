@@ -308,10 +308,11 @@ const ProductImageManager: React.FC<{
 
               {/* 圖片 */}
               <img
-                src={image.image_url}
+                src={`${image.image_url}?v=${image.id || Date.now()}`}
                 alt={image.alt_text || `產品圖片 ${index + 1}`}
                 className="w-full h-32 object-cover"
                 onError={(e) => {
+                  console.error('圖片載入失敗:', image.image_url);
                   e.currentTarget.src = '/images/placeholder.jpg';
                 }}
               />
