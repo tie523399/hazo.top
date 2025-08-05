@@ -129,25 +129,58 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   `;
 
-  const categoryConfig = {
-    host: {
-      gradient: 'from-blue-600 to-cyan-500',
-      label: '主機',
-      icon: '🎮'
-    },
-    cartridge: {
-      gradient: 'from-teal-500 to-emerald-500',
-      label: '煙彈',
-      icon: '💨'
-    },
-    disposable: {
-      gradient: 'from-purple-600 to-pink-500',
-      label: '拋棄式',
-      icon: '✨'
+  // 動態分類配置 - 根據分類名稱智能匹配
+  const getCategoryConfig = (category: string, categoryName?: string) => {
+    const displayName = categoryName || category;
+    
+    // 根據分類名稱智能判斷類型
+    if (category.includes('host') || displayName.includes('主機') || displayName.includes('設備')) {
+      return {
+        gradient: 'from-blue-600 to-cyan-500',
+        label: displayName,
+        icon: '🎮'
+      };
+    } else if (category.includes('cartridge') || displayName.includes('煙彈') || displayName.includes('彈藥')) {
+      return {
+        gradient: 'from-teal-500 to-emerald-500',
+        label: displayName,
+        icon: '💨'
+      };
+    } else if (category.includes('disposable') || displayName.includes('拋棄') || displayName.includes('一次性')) {
+      return {
+        gradient: 'from-purple-600 to-pink-500',
+        label: displayName,
+        icon: '✨'
+      };
+    } else if (displayName.includes('海洋') || displayName.includes('Ocean')) {
+      return {
+        gradient: 'from-blue-500 to-cyan-400',
+        label: displayName,
+        icon: '🌊'
+      };
+    } else if (displayName.includes('鯨魚') || displayName.includes('Whale')) {
+      return {
+        gradient: 'from-indigo-500 to-blue-400',
+        label: displayName,
+        icon: '🐋'
+      };
+    } else if (displayName.includes('國際') || displayName.includes('精選')) {
+      return {
+        gradient: 'from-emerald-500 to-teal-400',
+        label: displayName,
+        icon: '⭐'
+      };
+    } else {
+      // 默認配置
+      return {
+        gradient: 'from-gray-500 to-slate-400',
+        label: displayName,
+        icon: '📦'
+      };
     }
   };
 
-  const config = categoryConfig[product.category as keyof typeof categoryConfig] || categoryConfig.host;
+  const config = getCategoryConfig(product.category, product.category_name);
 
   return (
     <div className="group relative">

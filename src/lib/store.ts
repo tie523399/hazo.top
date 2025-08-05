@@ -7,8 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 export interface Product {
   id: number;
   name: string;
-  category: 'host' | 'cartridge' | 'disposable';
-  brand: string;
+  category: string; // 改為動態字符串，支持任意分類
+  category_id?: number; // 分類ID
+  category_name?: string; // 分類顯示名稱
+  brand?: string;
   price: number;
   original_price?: number;
   description: string;

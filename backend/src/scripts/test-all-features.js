@@ -1,0 +1,213 @@
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const { promisify } = require('util');
+
+// 數據庫連接
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '../../database/vape_store.db');
+const db = new sqlite3.Database(dbPath);
+const dbRun = promisify(db.run.bind(db));
+const dbGet = promisify(db.get.bind(db));
+const dbAll = promisify(db.all.bind(db));
+
+console.log('🧪 開始全面測試後台功能...');
+console.log('📁 數據庫路徑:', dbPath);
+
+async function testAllFeatures() {
+  try {
+    // 1. 更新系統設置
+    console.log('\n🔧 測試系統設置...');
+    await dbRun(`UPDATE system_settings SET value = ? WHERE key = ?`, ['/images/ocean-logo.gif', 'site_logo_url']);
+    await dbRun(`UPDATE system_settings SET value = ? WHERE key = ?`, ['/images/whale-logo.gif', 'site_favicon_url']);
+    await dbRun(`UPDATE system_settings SET value = ? WHERE key = ?`, ['海量國際', 'site_title']);
+    console.log('✅ 系統設置已更新');
+
+    // 2. 更新頁腳設置
+    console.log('\n🦶 測試頁腳設置...');
+    await dbRun(`UPDATE footer_settings SET title = ?, content = ?, image_url = ? WHERE section = ?`, 
+      ['海量國際', '海量國際致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。', '/images/ocean-logo.gif', 'company_info']);
+    
+    await dbRun(`UPDATE footer_settings SET content = ? WHERE section = ?`, 
+      ['© 2025卉田國際旗下 子公司:海量國際 版權所有', 'copyright']);
+    console.log('✅ 頁腳設置已更新');
+
+    // 3. 創建測試產品分類
+    console.log('\n🏷️ 測試產品分類...');
+    const categories = [
+      { name: '海洋系列電子煙', slug: 'ocean-series', description: '深海靈感設計的高端電子煙產品', image_url: '/images/ocean-logo.gif' },
+      { name: '鯨魚限定款', slug: 'whale-limited', description: '鯨魚主題限定版電子煙系列', image_url: '/images/whale-logo.gif' },
+      { name: '國際精選', slug: 'international-select', description: '國際頂級品牌精選產品', image_url: '/images/ocean-logo.gif' }
+    ];
+
+    for (const category of categories) {
+      await dbRun(`INSERT OR REPLACE INTO categories (name, slug, description, image_url, is_active, display_order) 
+                   VALUES (?, ?, ?, ?, 1, 1)`, 
+                   [category.name, category.slug, category.description, category.image_url]);
+    }
+    console.log('✅ 測試分類已創建');
+
+    // 4. 創建測試產品
+    console.log('\n📦 測試產品管理...');
+    const products = [
+      {
+        name: '海量 Ocean Pro 電子煙主機',
+        category_id: 1,
+        price: 2980,
+        description: '採用深海藍設計理念，融合海洋元素的高端電子煙主機。具備智能溫控、長效續航等頂級功能。',
+        image_url: '/images/ocean-logo.gif',
+        stock: 50,
+        is_featured: 1
+      },
+      {
+        name: '鯨魚限定版 Whale Special 煙彈',
+        category_id: 2,
+        price: 580,
+        description: '鯨魚主題限定版煙彈，獨特的海洋風味調配，帶來前所未有的味覺體驗。',
+        image_url: '/images/whale-logo.gif',
+        stock: 100,
+        is_featured: 1
+      },
+      {
+        name: '海量國際 精選套裝',
+        category_id: 3,
+        price: 4580,
+        description: '海量國際精心打造的豪華套裝，包含主機、多種口味煙彈及專業配件。',
+        image_url: '/images/ocean-logo.gif',
+        stock: 25,
+        is_featured: 1
+      }
+    ];
+
+    for (const product of products) {
+      await dbRun(`INSERT OR REPLACE INTO products 
+                   (name, category_id, price, description, image_url, stock, is_featured, is_active) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, 1)`, 
+                   [product.name, product.category_id, product.price, product.description, 
+                    product.image_url, product.stock, product.is_featured]);
+    }
+    console.log('✅ 測試產品已創建');
+
+    // 5. 創建測試公告
+    console.log('\n📢 測試公告管理...');
+    const announcements = [
+      {
+        title: '🌊 海量國際新品上市',
+        content: '全新海洋系列電子煙隆重登場！融合深海靈感與頂級工藝，為您帶來非凡體驗。',
+        type: 'info',
+        is_active: 1
+      },
+      {
+        title: '🐋 鯨魚限定版現正預購',
+        content: '限量發行的鯨魚主題電子煙，獨特設計與卓越品質的完美結合。預購享85折優惠！',
+        type: 'promotion',
+        is_active: 1
+      }
+    ];
+
+    for (const announcement of announcements) {
+      await dbRun(`INSERT OR REPLACE INTO announcements (title, content, type, is_active) 
+                   VALUES (?, ?, ?, ?)`, 
+                   [announcement.title, announcement.content, announcement.type, announcement.is_active]);
+    }
+    console.log('✅ 測試公告已創建');
+
+    // 6. 創建測試優惠券
+    console.log('\n🎫 測試優惠券管理...');
+    const coupons = [
+      {
+        code: 'OCEAN2025',
+        type: 'percentage',
+        value: 15,
+        min_amount: 1000,
+        max_uses: 100,
+        description: '海洋系列專享15%折扣券'
+      },
+      {
+        code: 'WHALE500',
+        type: 'fixed',
+        value: 500,
+        min_amount: 2000,
+        max_uses: 50,
+        description: '鯨魚限定版滿2000減500'
+      },
+      {
+        code: 'INTERNATIONAL',
+        type: 'percentage',
+        value: 20,
+        min_amount: 3000,
+        max_uses: 30,
+        description: '國際精選系列VIP折扣20%'
+      }
+    ];
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+    for (const coupon of coupons) {
+      await dbRun(`INSERT OR REPLACE INTO coupons 
+                   (code, type, value, min_amount, max_uses, used_count, description, start_date, end_date, is_active) 
+                   VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, 1)`, 
+                   [coupon.code, coupon.type, coupon.value, coupon.min_amount, coupon.max_uses, 
+                    coupon.description, tomorrow.toISOString(), nextMonth.toISOString()]);
+    }
+    console.log('✅ 測試優惠券已創建');
+
+    // 7. 更新首頁設置
+    console.log('\n🏠 測試首頁設置...');
+    const homepageSettings = [
+      {
+        section: 'hero',
+        title: '海量國際 - 深海品質體驗',
+        content: '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。海量國際為您帶來最專業的產品與服務。',
+        image_url: '/images/ocean-logo.gif'
+      },
+      {
+        section: 'featured_products',
+        title: '精選推薦',
+        content: '海洋系列與鯨魚限定版，頂級工藝與創新設計的完美融合',
+        image_url: '/images/whale-logo.gif'
+      },
+      {
+        section: 'brand_story',
+        title: '品牌故事',
+        content: '海量國際，卉田國際旗下子公司，專注於為全球用戶提供高品質電子煙產品。我們將海洋的純淨與深邃融入每一件產品中。',
+        image_url: '/images/ocean-logo.gif'
+      }
+    ];
+
+    for (const setting of homepageSettings) {
+      await dbRun(`UPDATE homepage_settings SET title = ?, content = ?, image_url = ? WHERE section = ?`, 
+                   [setting.title, setting.content, setting.image_url, setting.section]);
+    }
+    console.log('✅ 首頁設置已更新');
+
+    // 8. 測試查詢結果
+    console.log('\n📊 驗證測試結果...');
+    const systemSettings = await dbAll(`SELECT * FROM system_settings WHERE key IN ('site_logo_url', 'site_favicon_url', 'site_title')`);
+    const categoryCount = await dbGet(`SELECT COUNT(*) as count FROM categories WHERE is_active = 1`);
+    const productCount = await dbGet(`SELECT COUNT(*) as count FROM products WHERE is_active = 1`);
+    const announcementCount = await dbGet(`SELECT COUNT(*) as count FROM announcements WHERE is_active = 1`);
+    const couponCount = await dbGet(`SELECT COUNT(*) as count FROM coupons WHERE is_active = 1`);
+
+    console.log('\n📋 測試結果統計:');
+    console.log(`✅ 系統設置: ${systemSettings.length} 項已配置`);
+    console.log(`✅ 產品分類: ${categoryCount.count} 個活躍分類`);
+    console.log(`✅ 測試產品: ${productCount.count} 個活躍產品`);
+    console.log(`✅ 公告消息: ${announcementCount.count} 個活躍公告`);
+    console.log(`✅ 優惠券碼: ${couponCount.count} 個活躍優惠券`);
+
+    console.log('\n🎉 所有後台功能測試完成！');
+    console.log('🌊 使用的圖片: ocean-logo.gif, whale-logo.gif');
+    console.log('🏢 公司資訊: © 2025卉田國際旗下 子公司:海量國際 版權所有');
+    console.log('🚀 現在可以在管理後台查看和管理這些測試數據');
+
+  } catch (error) {
+    console.error('❌ 測試過程中發生錯誤:', error);
+  } finally {
+    db.close();
+  }
+}
+
+// 執行測試
+testAllFeatures();
