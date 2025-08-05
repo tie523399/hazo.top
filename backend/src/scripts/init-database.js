@@ -302,6 +302,57 @@ const initializeDatabase = async () => {
           button_link: null,
           display_order: 3,
           is_active: 1
+        },
+        {
+          section: 'hero_main',
+          image_url: '/images/20250710_1007_Desert Skateboarding Adventure_simple_compose_01jzs1d0rkfrktap14za68myeg.gif',
+          title: 'HAZO 主圖',
+          subtitle: '首頁主要展示圖片',
+          content: '首頁輪播主圖設置',
+          button_text: null,
+          button_link: null,
+          display_order: 0,
+          is_active: 1
+        },
+        {
+          section: 'features',
+          image_url: null,
+          title: '特色功能',
+          subtitle: '我們的服務特色',
+          content: JSON.stringify([
+            {
+              icon: 'Zap',
+              title: '極速配送',
+              description: '24小時內快速配送，讓您儘快享受',
+              gradient: 'from-amber-400 to-orange-500',
+              delay: '0ms'
+            },
+            {
+              icon: 'Shield',
+              title: '品質保證',
+              description: '正品保證，所有產品均通過品質檢測',
+              gradient: 'from-emerald-400 to-teal-500',
+              delay: '100ms'
+            },
+            {
+              icon: 'Truck',
+              title: '免費配送',
+              description: '滿額免運費，全台配送服務',
+              gradient: 'from-blue-400 to-cyan-500',
+              delay: '200ms'
+            },
+            {
+              icon: 'HeartHandshake',
+              title: '售後服務',
+              description: '專業客服團隊，提供完善售後服務',
+              gradient: 'from-pink-400 to-rose-500',
+              delay: '300ms'
+            }
+          ]),
+          button_text: null,
+          button_link: null,
+          display_order: 4,
+          is_active: 1
         }
       ];
       
