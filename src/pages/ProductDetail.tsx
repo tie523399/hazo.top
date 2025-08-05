@@ -11,7 +11,7 @@ import { formatPrice, getCategoryName, getImageUrl } from '@/lib/utils';
 import { useCartStore } from '@/lib/store';
 import { cartAPI, productsAPI } from '@/lib/api';
 import SEO, { createProductStructuredData, createBreadcrumbStructuredData } from '@/components/SEO';
-import InlineRecommendedProducts from '@/components/InlineRecommendedProducts';
+import RecommendedProducts from '@/components/RecommendedProducts';
 import ProductImageCarousel from '@/components/ProductImageCarousel';
 
 const ProductDetail: React.FC = () => {
@@ -435,9 +435,11 @@ const ProductDetail: React.FC = () => {
       </div>
 
       {/* 內嵌式推薦商品 */}
-      <InlineRecommendedProducts
+      <RecommendedProducts
+        variant="inline"
         excludeProductId={product.id}
         category={product.category}
+        title="相關商品推薦"
       />
     </div>
   );

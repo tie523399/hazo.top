@@ -124,7 +124,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 <Input
                   value={categoryForm.slug || ''}
                   onChange={(e) => setCategoryForm({...categoryForm, slug: e.target.value})}
-                  placeholder="如：host"
+                  placeholder="如：electronics"
                   required
                 />
               </div>

@@ -138,7 +138,7 @@ const Home: React.FC = () => {
       subtitle: homepageSettings.hero1.subtitle || '極致工藝，完美體驗',
       content: homepageSettings.hero1.content,
       image: homepageSettings.hero1.image_url || '/images/sp2_device_main_showcase.jpg',
-      category: homepageSettings.hero1.button_link || 'host',
+      category: homepageSettings.hero1.button_link || '/products',
       gradient: 'from-slate-900/70 via-blue-900/60 to-cyan-900/70',
       accentColor: 'cyan',
       is_active: homepageSettings.hero1.is_active

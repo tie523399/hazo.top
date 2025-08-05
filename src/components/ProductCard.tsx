@@ -129,55 +129,45 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   `;
 
-  // 動態分類配置 - 根據分類名稱智能匹配
+  // 動態分類配置 - 基於分類名稱生成一致的視覺效果
   const getCategoryConfig = (category: string, categoryName?: string) => {
     const displayName = categoryName || category;
     
-    // 根據分類名稱智能判斷類型
-    if (category.includes('host') || displayName.includes('主機') || displayName.includes('設備')) {
-      return {
-        gradient: 'from-blue-600 to-cyan-500',
-        label: displayName,
-        icon: '🎮'
-      };
-    } else if (category.includes('cartridge') || displayName.includes('煙彈') || displayName.includes('彈藥')) {
-      return {
-        gradient: 'from-teal-500 to-emerald-500',
-        label: displayName,
-        icon: '💨'
-      };
-    } else if (category.includes('disposable') || displayName.includes('拋棄') || displayName.includes('一次性')) {
-      return {
-        gradient: 'from-purple-600 to-pink-500',
-        label: displayName,
-        icon: '✨'
-      };
-    } else if (displayName.includes('海洋') || displayName.includes('Ocean')) {
-      return {
-        gradient: 'from-blue-500 to-cyan-400',
-        label: displayName,
-        icon: '🌊'
-      };
-    } else if (displayName.includes('鯨魚') || displayName.includes('Whale')) {
-      return {
-        gradient: 'from-indigo-500 to-blue-400',
-        label: displayName,
-        icon: '🐋'
-      };
-    } else if (displayName.includes('國際') || displayName.includes('精選')) {
-      return {
-        gradient: 'from-emerald-500 to-teal-400',
-        label: displayName,
-        icon: '⭐'
-      };
-    } else {
-      // 默認配置
-      return {
-        gradient: 'from-gray-500 to-slate-400',
-        label: displayName,
-        icon: '📦'
-      };
-    }
+    // 使用字符串雜湊來生成一致的顏色
+    const getHashCode = (str: string) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // 轉換為32位整數
+      }
+      return Math.abs(hash);
+    };
+
+    const gradients = [
+      'from-blue-600 to-cyan-500',
+      'from-teal-500 to-emerald-500', 
+      'from-purple-600 to-pink-500',
+      'from-orange-500 to-amber-400',
+      'from-indigo-500 to-blue-400',
+      'from-emerald-500 to-teal-400',
+      'from-rose-500 to-pink-400',
+      'from-cyan-500 to-blue-400',
+      'from-violet-500 to-purple-400',
+      'from-lime-500 to-green-400'
+    ];
+
+    const icons = ['🎮', '💨', '✨', '🌟', '🐋', '⭐', '🎯', '💎', '🚀', '🌊'];
+
+    const hash = getHashCode(category);
+    const gradientIndex = hash % gradients.length;
+    const iconIndex = hash % icons.length;
+
+    return {
+      gradient: gradients[gradientIndex],
+      label: displayName,
+      icon: icons[iconIndex]
+    };
   };
 
   const config = getCategoryConfig(product.category, product.category_name);

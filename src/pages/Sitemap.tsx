@@ -84,16 +84,9 @@ const Sitemap: React.FC = () => {
   };
 
   const getCategoryName = (category: string) => {
-    switch (category) {
-      case 'host':
-        return '主機';
-      case 'cartridge':
-        return '煙彈';
-      case 'disposable':
-        return '拋棄式';
-      default:
-        return category;
-    }
+    // 不再使用硬編碼分類映射，直接返回分類名稱
+    // 分類名稱由管理員在後台設置
+    return category;
   };
 
   const getCategoryColor = (category: string) => {

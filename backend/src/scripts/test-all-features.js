@@ -30,61 +30,25 @@ async function testAllFeatures() {
       ['© 2025卉田國際旗下 子公司:海量國際 版權所有', 'copyright']);
     console.log('✅ 頁腳設置已更新');
 
-    // 3. 創建測試產品分類
+    // 3. 測試分類管理功能
     console.log('\n🏷️ 測試產品分類...');
-    const categories = [
-      { name: '海洋系列電子煙', slug: 'ocean-series', description: '深海靈感設計的高端電子煙產品', image_url: '/images/ocean-logo.gif' },
-      { name: '鯨魚限定款', slug: 'whale-limited', description: '鯨魚主題限定版電子煙系列', image_url: '/images/whale-logo.gif' },
-      { name: '國際精選', slug: 'international-select', description: '國際頂級品牌精選產品', image_url: '/images/ocean-logo.gif' }
-    ];
+    console.log('ℹ️ 分類現在由管理員動態創建，不再使用預設分類');
+    console.log('💡 請使用後台管理系統 /admin 來創建和管理分類');
+    
+    // 檢查是否有現有分類
+    const existingCategories = await dbAll('SELECT COUNT(*) as count FROM categories');
+    console.log(`📋 當前分類數量: ${existingCategories[0].count}`);
 
-    for (const category of categories) {
-      await dbRun(`INSERT OR REPLACE INTO categories (name, slug, description, image_url, is_active, display_order) 
-                   VALUES (?, ?, ?, ?, 1, 1)`, 
-                   [category.name, category.slug, category.description, category.image_url]);
-    }
-    console.log('✅ 測試分類已創建');
-
-    // 4. 創建測試產品
+    // 4. 測試產品管理功能
     console.log('\n📦 測試產品管理...');
-    const products = [
-      {
-        name: '海量 Ocean Pro 電子煙主機',
-        category_id: 1,
-        price: 2980,
-        description: '採用深海藍設計理念，融合海洋元素的高端電子煙主機。具備智能溫控、長效續航等頂級功能。',
-        image_url: '/images/ocean-logo.gif',
-        stock: 50,
-        is_featured: 1
-      },
-      {
-        name: '鯨魚限定版 Whale Special 煙彈',
-        category_id: 2,
-        price: 580,
-        description: '鯨魚主題限定版煙彈，獨特的海洋風味調配，帶來前所未有的味覺體驗。',
-        image_url: '/images/whale-logo.gif',
-        stock: 100,
-        is_featured: 1
-      },
-      {
-        name: '海量國際 精選套裝',
-        category_id: 3,
-        price: 4580,
-        description: '海量國際精心打造的豪華套裝，包含主機、多種口味煙彈及專業配件。',
-        image_url: '/images/ocean-logo.gif',
-        stock: 25,
-        is_featured: 1
-      }
-    ];
+    console.log('ℹ️ 產品現在需要先創建分類，然後通過管理員後台創建');
+    console.log('💡 請使用後台管理系統 /admin 來創建分類和產品');
+    
+    // 檢查是否有現有產品
+    const existingProducts = await dbAll('SELECT COUNT(*) as count FROM products');
+    console.log(`📋 當前產品數量: ${existingProducts[0].count}`);
 
-    for (const product of products) {
-      await dbRun(`INSERT OR REPLACE INTO products 
-                   (name, category_id, price, description, image_url, stock, is_featured, is_active) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, 1)`, 
-                   [product.name, product.category_id, product.price, product.description, 
-                    product.image_url, product.stock, product.is_featured]);
-    }
-    console.log('✅ 測試產品已創建');
+
 
     // 5. 創建測試公告
     console.log('\n📢 測試公告管理...');

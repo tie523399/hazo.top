@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { X, ShoppingCart, Star, Sparkles } from 'lucide-react';
+import { X, ShoppingCart, Star, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Product } from '@/lib/store';
@@ -10,37 +10,54 @@ import { useToast } from '@/hooks/use-toast';
 import { cn, formatPrice } from '@/lib/utils';
 
 interface RecommendedProductsProps {
-  isOpen: boolean;
-  onClose: () => void;
+  variant?: 'modal' | 'inline';
+  isOpen?: boolean;
+  onClose?: () => void;
   excludeProductId?: number;
   category?: string;
+  title?: string;
+  className?: string;
 }
 
 const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
-  isOpen,
+  variant = 'modal',
+  isOpen = true,
   onClose,
   excludeProductId,
-  category
+  category,
+  title = '推薦商品',
+  className = ''
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [addingToCart, setAddingToCart] = useState<number | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { sessionId, setItems, setTotalAmount, setItemCount } = useCartStore();
   const { toast } = useToast();
 
+  // 只在彈窗模式且isOpen為true時載入，或內嵌模式時直接載入
   useEffect(() => {
-    if (isOpen) {
+    if ((variant === 'modal' && isOpen) || variant === 'inline') {
       loadRecommendedProducts();
     }
-  }, [isOpen, category, excludeProductId]);
+  }, [isOpen, category, excludeProductId, variant]);
+
+  // 內嵌模式才需要檢查滾動按鈕
+  useEffect(() => {
+    if (variant === 'inline') {
+      checkScrollButtons();
+    }
+  }, [products, variant]);
 
   const loadRecommendedProducts = async () => {
     try {
       setLoading(true);
       const response = await productsAPI.getProducts({
         category,
-        limit: 6
+        limit: variant === 'modal' ? 6 : 8
       });
       
       // 過濾掉當前商品
@@ -48,20 +65,25 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
         (product: Product) => product.id !== excludeProductId
       );
       
-      setProducts(filteredProducts.slice(0, 6));
+      setProducts(filteredProducts.slice(0, variant === 'modal' ? 6 : 8));
     } catch (error) {
       console.error('載入推薦商品失敗:', error);
+      toast({
+        title: "載入失敗",
+        description: "無法載入推薦商品",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const addToCart = async (product: Product) => {
-    if (product.stock === 0) {
+  const handleAddToCart = async (product: Product) => {
+    if (!sessionId) {
       toast({
-        title: "商品缺貨",
-        description: "此商品目前缺貨，無法加入購物車",
-        variant: "destructive",
+        title: "操作失敗",
+        description: "會話已過期，請重新整理頁面",
+        variant: "destructive"
       });
       return;
     }
@@ -69,171 +91,230 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
     setAddingToCart(product.id);
 
     try {
-      // 如果有變體，選擇第一個有庫存的變體
-      let variantId = null;
-      if (product.variants && product.variants.length > 0) {
-        const availableVariant = product.variants.find(v => v.stock > 0);
-        variantId = availableVariant?.id || null;
+      const response = await cartAPI.addToCart(sessionId, {
+        product_id: product.id,
+        quantity: 1
+      });
+
+      if (response.data) {
+        setItems(response.data.items);
+        setTotalAmount(response.data.totalAmount);
+        setItemCount(response.data.itemCount);
+
+        toast({
+          title: "已加入購物車",
+          description: `${product.name} 已成功加入購物車`
+        });
       }
-
-      await cartAPI.addToCart({
-        sessionId,
-        productId: product.id,
-        variantId,
-        quantity: 1,
-      });
-
-      // 重新獲取購物車數據
-      const cartResponse = await cartAPI.getCart(sessionId);
-      setItems(cartResponse.data.items);
-      setTotalAmount(cartResponse.data.totalAmount);
-      setItemCount(cartResponse.data.itemCount);
-
-      toast({
-        title: "已加入購物車",
-        description: `${product.name} 已成功加入購物車`,
-      });
-    } catch (error) {
+    } catch (error: any) {
       console.error('加入購物車失敗:', error);
       toast({
         title: "加入失敗",
-        description: "無法加入購物車，請稍後再試",
-        variant: "destructive",
+        description: error.response?.data?.error || "加入購物車失敗",
+        variant: "destructive"
       });
     } finally {
       setAddingToCart(null);
     }
   };
 
-  if (!isOpen) return null;
+  // 內嵌模式的滾動功能
+  const checkScrollButtons = () => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    setCanScrollLeft(container.scrollLeft > 0);
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth
+    );
+  };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-white rounded-t-3xl shadow-2xl transform transition-all duration-300 ease-out">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center gap-2">
-            <Sparkles size={20} className="text-orange-500" />
-            <h2 className="text-lg font-bold text-gray-900">為你推薦</h2>
+  const scroll = (direction: 'left' | 'right') => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const scrollAmount = 300;
+    
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(checkScrollButtons, 300);
+  };
+
+  // 產品卡片組件
+  const ProductCard = ({ product }: { product: Product }) => (
+    <div className={cn(
+      "group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300",
+      variant === 'inline' && "flex-shrink-0 w-64"
+    )}>
+      <div className="relative">
+        <Link to={`/products/${product.id}`}>
+          <img
+            src={product.image_url || '/images/placeholder.jpg'}
+            alt={product.name}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </Link>
+        {product.original_price && product.original_price > product.price && (
+          <Badge className="absolute top-2 left-2 bg-red-500 text-white">
+            特價
+          </Badge>
+        )}
+      </div>
+      
+      <div className="p-4">
+        <Link to={`/products/${product.id}`}>
+          <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-2">
+            {product.name}
+          </h3>
+        </Link>
+        
+        <div className="flex items-center justify-between mb-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-gray-900">
+                ${formatPrice(product.price)}
+              </span>
+              {product.original_price && product.original_price > product.price && (
+                <span className="text-sm text-gray-500 line-through">
+                  ${formatPrice(product.original_price)}
+                </span>
+              )}
+            </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
-          >
-            <X size={16} />
-          </Button>
+          
+          <div className="flex items-center gap-1 text-yellow-500">
+            <Star size={14} fill="currentColor" />
+            <span className="text-sm text-gray-600">4.8</span>
+          </div>
         </div>
-
-        {/* Content */}
-        <div className="max-h-[70vh] overflow-y-auto p-4">
-          {loading ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex gap-3 animate-pulse">
-                  <div className="w-20 h-20 bg-gray-200 rounded-xl"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                    <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        
+        <Button
+          onClick={() => handleAddToCart(product)}
+          disabled={addingToCart === product.id || product.stock <= 0}
+          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+          size="sm"
+        >
+          {addingToCart === product.id ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              加入中...
+            </span>
+          ) : product.stock <= 0 ? (
+            '暫時缺貨'
           ) : (
-            <div className="space-y-3">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
-                >
-                  {/* Product Image */}
-                  <Link to={`/products/${product.id}`} onClick={onClose}>
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white shadow-sm">
-                      <img
-                        src={product.image_url || '/images/placeholder.jpg'}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                      {product.stock < 10 && product.stock > 0 && (
-                        <div className="absolute -top-1 -right-1">
-                          <Badge className="bg-orange-500 text-white text-xs px-1 py-0 rounded-full">
-                            僅剩{product.stock}
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-
-                  {/* Product Info */}
-                  <div className="flex-1 min-w-0">
-                    <Link to={`/products/${product.id}`} onClick={onClose}>
-                      <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-1 hover:text-blue-600 transition-colors">
-                        {product.name}
-                      </h3>
-                    </Link>
-                    
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary" className="text-xs bg-blue-50 text-blue-700">
-                        {product.brand}
-                      </Badge>
-                      <div className="flex items-center gap-1">
-                        <Star size={12} className="fill-amber-400 text-amber-400" />
-                        <span className="text-xs text-gray-600">4.8</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-lg font-bold text-blue-600">
-                          {formatPrice(product.price)}
-                        </p>
-                      </div>
-                      
-                      <Button
-                        size="sm"
-                        onClick={() => addToCart(product)}
-                        disabled={addingToCart === product.id || product.stock === 0}
-                        className={cn(
-                          "h-8 px-3 text-xs rounded-full",
-                          product.stock === 0
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
-                        )}
-                      >
-                        {addingToCart === product.id ? (
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        ) : product.stock === 0 ? (
-                          '缺貨'
-                        ) : (
-                          <>
-                            <ShoppingCart size={12} className="mr-1" />
-                            加入
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <>
+              <ShoppingCart size={16} className="mr-1" />
+              加入購物車
+            </>
           )}
-        </div>
+        </Button>
+      </div>
+    </div>
+  );
 
-        {/* Footer */}
-        <div className="p-4 border-t bg-gray-50 rounded-b-3xl">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={onClose}
-          >
-            關閉推薦
-          </Button>
+  // 彈窗模式
+  if (variant === 'modal') {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b">
+            <div className="flex items-center gap-2">
+              <Sparkles className="text-yellow-500" size={24} />
+              <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+            </div>
+            {onClose && (
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X size={20} />
+              </Button>
+            )}
+          </div>
+          
+          <div className="p-6">
+            {loading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-gray-100 rounded-xl h-80 animate-pulse" />
+                ))}
+              </div>
+            ) : products.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-400 mb-2">📦</div>
+                <p className="text-gray-500">暫無推薦商品</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+    );
+  }
+
+  // 內嵌模式
+  return (
+    <div className={cn("py-8", className)}>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Sparkles className="text-yellow-500" size={24} />
+          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+        </div>
+        
+        {products.length > 0 && (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => scroll('left')}
+              disabled={!canScrollLeft}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => scroll('right')}
+              disabled={!canScrollRight}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {loading ? (
+        <div className="flex gap-4 overflow-hidden">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-gray-100 rounded-xl h-80 w-64 flex-shrink-0 animate-pulse" />
+          ))}
+        </div>
+      ) : products.length > 0 ? (
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-4 overflow-x-auto scrollbar-hide pb-2"
+          onScroll={checkScrollButtons}
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-8">
+          <div className="text-gray-400 mb-2 text-4xl">📦</div>
+          <p className="text-gray-500">暫無推薦商品</p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default RecommendedProducts; 
+export default RecommendedProducts;

@@ -23,16 +23,14 @@ export function formatDate(dateString: string): string {
   })
 }
 
-// 產品分類映射
-export const categoryMap = {
-  host: '主機',
-  cartridge: '煙彈',
-  disposable: '拋棄式'
-}
+// 動態分類映射 - 由管理員後台管理，不再使用硬編碼
+export const categoryMap: Record<string, string> = {}
 
-// 獲取分類中文名稱
+// 獲取分類中文名稱 - 現在直接返回分類slug，由後端動態提供分類名稱
 export function getCategoryName(category: string): string {
-  return categoryMap[category as keyof typeof categoryMap] || category
+  // 不再使用硬編碼映射，直接返回原始值
+  // 分類顯示名稱應該由後端API提供
+  return category
 }
 
 // 公告類型映射
