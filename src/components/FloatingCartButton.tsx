@@ -55,7 +55,7 @@ const FloatingCartButton: React.FC<FloatingCartButtonProps> = ({ className = '' 
                            text-white text-xs font-bold rounded-full h-6 w-6
                            flex items-center justify-center
                            shadow-lg border-2 border-white/50
-                           animate-bounce">
+                           scale-100 hover:scale-110 transition-transform duration-200">
             {itemCount > 99 ? '99+' : itemCount}
           </span>
         )}

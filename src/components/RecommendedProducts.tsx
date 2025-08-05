@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { X, ShoppingCart, Star, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
   };
 
   // 內嵌模式的滾動功能
-  const checkScrollButtons = () => {
+  const checkScrollButtons = useCallback(() => {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
@@ -128,7 +128,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
     setCanScrollRight(
       container.scrollLeft < container.scrollWidth - container.clientWidth
     );
-  };
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
@@ -147,7 +147,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
   // 產品卡片組件
   const ProductCard = ({ product }: { product: Product }) => (
     <div className={cn(
-      "group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300",
+      "group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200 stable-transform",
       variant === 'inline' && "flex-shrink-0 w-64"
     )}>
       <div className="relative">
@@ -155,7 +155,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
           <img
                             src={product.image_url || '/images/whale-logo.png'}
             alt={product.name}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-48 object-cover transition-transform duration-200"
           />
         </Link>
         {product.original_price && product.original_price > product.price && (

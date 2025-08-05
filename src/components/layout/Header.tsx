@@ -128,12 +128,17 @@ const Header: React.FC = () => {
           
           .hazo-wave-icon {
             color: var(--ocean-sea-blue);
-            animation: gentle-wave 2s ease-in-out infinite;
+          }
+          
+          @media (prefers-reduced-motion: no-preference) {
+            .hazo-wave-icon {
+              animation: gentle-wave 3s ease-in-out infinite;
+            }
           }
           
           @keyframes gentle-wave {
             0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(5deg); }
+            50% { transform: rotate(3deg); }
           }
           
           @media (max-width: 768px) {
@@ -264,13 +269,27 @@ const Header: React.FC = () => {
             color: var(--ocean-deep-blue);
             padding: 1rem;
             border-bottom: 1px solid rgba(75, 156, 211, 0.1);
-            transition: all 0.3s ease;
+            transition: background-color 0.2s ease;
           }
           
           .mobile-menu-item:hover {
             background: rgba(75, 156, 211, 0.1);
             color: var(--ocean-sea-blue);
-            padding-left: 1.5rem;
+          }
+          
+          @media (max-width: 768px) {
+            .mobile-menu-item {
+              transition: background-color 0.15s ease;
+            }
+            
+            .mobile-menu-item:hover {
+              padding-left: 1rem;
+              transform: none;
+            }
+            
+            .mobile-menu-item:active {
+              background: rgba(75, 156, 211, 0.15);
+            }
           }
         `
       }} />

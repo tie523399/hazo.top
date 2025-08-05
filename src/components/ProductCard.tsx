@@ -178,8 +178,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="group relative">
       {/* 按鈕樣式 */}
       <style>{buttonStyles}</style>
-      {/* Premium Card Container */}
-      <div className="relative h-full overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl">
+              {/* Premium Card Container */}
+        <div className="relative h-full overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-200 hover:shadow-2xl stable-transform no-flicker">
         {/* Gradient Border Effect */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         
@@ -190,7 +190,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
               {/* Loading Skeleton */}
               {!imageLoaded && (
-                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
+                <div className="absolute inset-0 bg-gray-200" />
               )}
               
               {/* Product Image - 直接顯示商品本身的主圖 */}

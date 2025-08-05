@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { X, Info, AlertTriangle, Gift } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,12 @@ const AnnouncementBanner: React.FC = () => {
     // 從本地存儲加載已關閉的公告
     const dismissed = localStorage.getItem('dismissed-announcements');
     if (dismissed) {
-      setDismissedIds(JSON.parse(dismissed));
+      try {
+        setDismissedIds(JSON.parse(dismissed));
+      } catch (error) {
+        console.error('解析已關閉公告失敗:', error);
+        localStorage.removeItem('dismissed-announcements');
+      }
     }
   }, []);
 
@@ -49,10 +54,12 @@ const AnnouncementBanner: React.FC = () => {
     return type === 'warning' ? 'destructive' : 'default';
   };
 
-  const safeAnnouncements = Array.isArray(announcements) ? announcements : [];
-  const visibleAnnouncements = safeAnnouncements.filter(
-    (announcement) => !dismissedIds.includes(announcement.id)
-  );
+  const visibleAnnouncements = useMemo(() => {
+    const safeAnnouncements = Array.isArray(announcements) ? announcements : [];
+    return safeAnnouncements.filter(
+      (announcement) => !dismissedIds.includes(announcement.id)
+    );
+  }, [announcements, dismissedIds]);
 
   if (visibleAnnouncements.length === 0) {
     return null;

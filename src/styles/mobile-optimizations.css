@@ -1,0 +1,203 @@
+/* 手機端優化 - 減少閃爍和提升性能 */
+
+/* 1. 禁用不必要的動畫在低性能設備上 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 2. 手機端優化的過渡效果 */
+@media (max-width: 768px) {
+  /* 減少過渡動畫時間，提升響應速度 */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  /* 禁用複雜的變換動畫 */
+  .animate-bounce,
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+  
+  /* 優化變換性能 */
+  .transform {
+    will-change: transform;
+    transform: translateZ(0); /* 強制硬件加速 */
+  }
+  
+  /* 優化滾動性能 */
+  .overflow-scroll,
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* 減少陰影複雜度 */
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* 優化背景模糊 */
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    backdrop-filter: none !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+  }
+}
+
+/* 3. 觸摸優化 */
+@media (max-width: 768px) {
+  /* 增加觸摸目標大小 */
+  button,
+  a,
+  .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 禁用觸摸高亮 */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* 允許文本選擇在特定元素 */
+  input,
+  textarea,
+  p,
+  span,
+  .selectable {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+/* 4. 性能優化 */
+@media (max-width: 768px) {
+  /* 強制硬件加速關鍵元素 */
+  .fixed,
+  .sticky,
+  .absolute {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  
+  /* 優化重繪 */
+  img,
+  video {
+    will-change: auto;
+    backface-visibility: hidden;
+  }
+  
+  /* 減少重排 */
+  .grid,
+  .flex {
+    contain: layout style;
+  }
+}
+
+/* 5. 減少視覺噪音 */
+@media (max-width: 768px) {
+  /* 簡化漸變 */
+  .bg-gradient-to-r,
+  .bg-gradient-to-l,
+  .bg-gradient-to-t,
+  .bg-gradient-to-b,
+  .bg-gradient-to-br,
+  .bg-gradient-to-bl,
+  .bg-gradient-to-tr,
+  .bg-gradient-to-tl {
+    background: linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to)) !important;
+  }
+  
+  /* 減少透明度計算 */
+  .bg-opacity-50,
+  .bg-opacity-75,
+  .bg-opacity-90 {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+  }
+}
+
+/* 6. 防止佈局偏移 */
+@media (max-width: 768px) {
+  /* 確保圖片不會導致佈局偏移 */
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+  
+  /* 防止 flexbox 收縮問題 */
+  .flex-shrink-0 {
+    flex-shrink: 0 !important;
+  }
+  
+  /* 穩定的容器高度 */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh; /* 動態視窗高度 */
+  }
+}
+
+/* 7. 特殊情況處理 */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* 橫屏時的特殊處理 */
+  .min-h-screen {
+    min-height: 100vh;
+  }
+}
+
+/* 8. iOS Safari 特殊優化 */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    /* 防止 iOS 彈跳效果 */
+    body {
+      position: fixed;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .overflow-scroll {
+      position: relative;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
+/* 9. 避免閃爍的特殊類 */
+.no-flicker {
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.stable-transform {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* 10. 手機端導航優化 */
+@media (max-width: 768px) {
+  .mobile-nav-item {
+    transition: background-color 0.15s ease !important;
+    transform: none !important;
+  }
+  
+  .mobile-nav-item:active {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    transform: none !important;
+  }
+}
