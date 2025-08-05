@@ -18,6 +18,8 @@ import Admin from '@/pages/Admin';
 import Shipping from '@/pages/Shipping';
 import Returns from '@/pages/Returns';
 import Sitemap from '@/pages/Sitemap';
+import About from '@/pages/About';
+import DynamicPage from '@/pages/DynamicPage';
 import './App.css';
 
 const ScrollToTop = () => {
@@ -75,6 +77,9 @@ function App() {
               <Route path="/shipping" element={<Shipping />} />
               <Route path="/returns" element={<Returns />} />
               <Route path="/sitemap" element={<Sitemap />} />
+              <Route path="/about" element={<About />} />
+              {/* 動態頁面路由 - 用於顯示後台創建的頁面內容 */}
+              <Route path="/page/:pageKey" element={<DynamicPage />} />
             </Routes>
           </ErrorBoundary>
         </main>

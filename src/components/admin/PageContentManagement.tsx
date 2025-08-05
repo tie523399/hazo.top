@@ -163,6 +163,15 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h3 className="text-sm font-semibold text-blue-900 mb-2">💡 使用說明</h3>
+              <ul className="text-xs text-blue-800 space-y-1">
+                <li>• <strong>頁面標識符</strong>：用於網址，例如 "about" 會創建 /page/about 頁面</li>
+                <li>• <strong>頁面名稱</strong>：顯示在管理列表中的名稱</li>
+                <li>• <strong>內容格式</strong>：可以是HTML或JSON格式</li>
+                <li>• 創建後可在前台訪問：<code>/page/您的標識符</code></li>
+              </ul>
+            </div>
             <form onSubmit={handleCreateOrUpdateContent} className="space-y-4">
               <div>
                 <Label>頁面標識符</Label>
@@ -203,14 +212,18 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
               </div>
               
               <div>
-                <Label>內容 (JSON 格式)</Label>
+                <Label>內容 (JSON 或 HTML 格式)</Label>
                 <Textarea
-                  placeholder='{"key": "value"}'
+                  placeholder='HTML範例：<h1>標題</h1><p>內容</p>
+或 JSON範例：{"title": "標題", "content": "內容", "items": ["項目1", "項目2"]}'
                   value={jsonContent}
                   onChange={(e) => setJsonContent(e.target.value)}
-                  rows={8}
+                  rows={10}
                   className="font-mono text-sm"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  支援HTML標籤或JSON格式，JSON會自動格式化顯示
+                </p>
               </div>
               
               <div>
@@ -279,11 +292,23 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
                         <TableCell className="font-medium">
                           {content.page_name}
                         </TableCell>
-                        <TableCell>
+                                              <TableCell>
+                        <div className="space-y-1">
                           <code className="bg-gray-100 px-2 py-1 rounded text-sm">
                             {content.page_key}
                           </code>
-                        </TableCell>
+                          <div>
+                            <a 
+                              href={`/page/${content.page_key}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 hover:text-blue-800 underline"
+                            >
+                              /page/{content.page_key} ↗
+                            </a>
+                          </div>
+                        </div>
+                      </TableCell>
                         <TableCell>
                           <Badge variant={content.is_active ? "default" : "secondary"}>
                             {content.is_active ? '啟用' : '停用'}
