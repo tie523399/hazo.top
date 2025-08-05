@@ -257,13 +257,7 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
       console.log('🎯 舊產品清除完成，請設置 CLEAR_LEGACY_PRODUCTS=false 防止重複清除');
     }
 
-    // 檢查是否需要添加分類圖片欄位（一次性操作）
-    if (process.env.ADD_CATEGORY_IMAGE_COLUMN === 'true') {
-      console.log('🖼️ 檢測到分類圖片欄位添加標記，執行數據庫遷移...');
-      const addCategoryImage = require('./scripts/add-category-image.js');
-      await addCategoryImage();
-      console.log('🎯 分類圖片欄位添加完成，請設置 ADD_CATEGORY_IMAGE_COLUMN=false 防止重複執行');
-    }
+
 
     // 檢查產品數據狀態（僅顯示信息，不自動恢復）
     const { dbAsync } = require('./database/db');

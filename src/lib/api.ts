@@ -203,19 +203,8 @@ export const categoriesAPI = {
     description?: string;
     display_order?: number;
     is_active?: boolean;
-    image?: File;
   }) => {
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('slug', data.slug);
-    if (data.description) formData.append('description', data.description);
-    if (data.display_order !== undefined) formData.append('display_order', data.display_order.toString());
-    if (data.is_active !== undefined) formData.append('is_active', data.is_active.toString());
-    if (data.image) formData.append('image', data.image);
-    
-    return api.post('/categories', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    return api.post('/categories', data);
   },
   
   // 更新分類
@@ -225,19 +214,8 @@ export const categoriesAPI = {
     description?: string;
     display_order?: number;
     is_active?: boolean;
-    image?: File;
   }) => {
-    const formData = new FormData();
-    if (data.name) formData.append('name', data.name);
-    if (data.slug) formData.append('slug', data.slug);
-    if (data.description !== undefined) formData.append('description', data.description);
-    if (data.display_order !== undefined) formData.append('display_order', data.display_order.toString());
-    if (data.is_active !== undefined) formData.append('is_active', data.is_active.toString());
-    if (data.image) formData.append('image', data.image);
-    
-    return api.put(`/categories/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    return api.put(`/categories/${id}`, data);
   },
   
   // 刪除分類
