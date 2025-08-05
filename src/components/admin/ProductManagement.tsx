@@ -326,10 +326,11 @@ const ProductImageManager: React.FC<{
                   });
                 }}
                 onError={(e) => {
-                  console.error('圖片載入失敗:', {
+                  console.error('❌ 圖片載入失敗 - 這就是為什麼顯示鯨魚圖:', {
                     id: image.id,
-                    url: image.image_url,
-                    fullSrc: `${image.image_url}?v=${image.id}`
+                    原始URL: image.image_url,
+                    完整URL: `${image.image_url}?v=${image.id}`,
+                    錯誤: '圖片文件不存在或無法訪問'
                   });
                   e.currentTarget.src = '/images/whale-logo.png';
                 }}

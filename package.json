@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "tsc -b && vite build && npm run copy-sitemap",
+    "build:frontend": "tsc -b && vite build && npm run copy-sitemap && npm run copy-images",
     "build:backend": "cd backend && npm install --omit=dev --silent",
     "copy-sitemap": "node -e \"const fs = require('fs'); if (!fs.existsSync('dist')) fs.mkdirSync('dist'); fs.copyFileSync('public/sitemap.xml', 'dist/sitemap.xml');\"",
+    "copy-images": "node -e \"const fs = require('fs'); const path = require('path'); if (!fs.existsSync('dist/images')) fs.mkdirSync('dist/images', {recursive: true}); const publicImagesDir = 'public/images'; if (fs.existsSync(publicImagesDir)) { const files = fs.readdirSync(publicImagesDir); files.forEach(file => { fs.copyFileSync(path.join(publicImagesDir, file), path.join('dist/images', file)); }); }\"",
     "start": "node backend/src/server.js",
     "lint": "eslint .",
     "preview": "vite preview"

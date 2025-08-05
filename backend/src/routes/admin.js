@@ -9,8 +9,11 @@ const path = require('path');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'vape-store-secret-key';
 
-// 圖片上傳目錄
-const uploadDir = path.join(__dirname, '../../../public/images');
+// 圖片上傳目錄 - 根據環境選擇正確路徑
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const uploadDir = NODE_ENV === 'production' 
+  ? path.join(__dirname, '../../../dist/images')
+  : path.join(__dirname, '../../../public/images');
 
 // 確保目錄存在
 if (!fs.existsSync(uploadDir)) {
@@ -246,7 +249,7 @@ router.post('/upload-image', authenticateToken, upload.single('image'), (req, re
 
 // 獲取圖片列表路由
 router.get('/images', authenticateToken, (req, res) => {
-  const imagesDir = path.join(__dirname, '../../../public/images');
+  const imagesDir = uploadDir;
   fs.readdir(imagesDir, (err, files) => {
     if (err) {
       console.error('無法讀取圖片目錄:', err);
@@ -273,7 +276,7 @@ router.get('/images', authenticateToken, (req, res) => {
 // 刪除圖片路由
 router.delete('/images/:filename', authenticateToken, (req, res) => {
   const filename = req.params.filename;
-  const filePath = path.join(__dirname, '../../../public/images', filename);
+  const filePath = path.join(uploadDir, filename);
 
   // 檢查文件是否存在
   if (!fs.existsSync(filePath)) {
