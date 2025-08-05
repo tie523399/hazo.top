@@ -249,6 +249,14 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
       await forceAdminReset();
     }
 
+    // 檢查是否需要清除舊產品數據（一次性操作）
+    if (process.env.CLEAR_LEGACY_PRODUCTS === 'true') {
+      console.log('🧹 檢測到清除舊產品標記，執行清除...');
+      const clearLegacyProducts = require('./scripts/clear-legacy-products.js');
+      await clearLegacyProducts();
+      console.log('🎯 舊產品清除完成，請設置 CLEAR_LEGACY_PRODUCTS=false 防止重複清除');
+    }
+
     // 檢查產品數據狀態（僅顯示信息，不自動恢復）
     const { dbAsync } = require('./database/db');
     const row = await dbAsync.get('SELECT COUNT(*) as count FROM products');
