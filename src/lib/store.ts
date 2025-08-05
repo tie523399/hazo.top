@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { initializeBrandSettings } from './favicon';
 import { v4 as uuidv4 } from 'uuid';
 
 // 產品類型定義
@@ -59,12 +60,9 @@ export interface CartItem {
 export interface SystemSettings {
   show_product_reviews: boolean;
   show_product_preview: boolean;
-}
-
-// 系統設置類型定義
-export interface SystemSettings {
-  show_product_reviews: boolean;
-  show_product_preview: boolean;
+  site_title?: string;
+  site_logo_url?: string;
+  site_favicon_url?: string;
 }
 
 // 優惠券類型定義
@@ -318,10 +316,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         const settings: SystemSettings = {
           show_product_reviews: settingsData.show_product_reviews === 'true',
           show_product_preview: settingsData.show_product_preview === 'true',
+          site_title: settingsData.site_title,
+          site_logo_url: settingsData.site_logo_url,
+          site_favicon_url: settingsData.site_favicon_url,
         };
 
         console.log('✅ 解析後的設置:', settings); // 調試日誌
         set({ settings, loading: false });
+        
+        // 初始化品牌設置（favicon和頁面標題）
+        initializeBrandSettings(settings);
       } else {
         throw new Error('API 調用失敗');
       }

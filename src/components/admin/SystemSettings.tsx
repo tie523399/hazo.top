@@ -119,6 +119,45 @@ const SystemSettings: React.FC<SystemSettingsProps> = ({
                 placeholder="/images/banner.jpg"
               />
             </div>
+            
+            <div className="space-y-2">
+              <Label>網站標題</Label>
+              <Input 
+                value={settingsForm.site_title || ''} 
+                onChange={e => setSettingsForm({
+                  ...settingsForm, 
+                  site_title: e.target.value
+                })} 
+                placeholder="HAZO"
+              />
+              <p className="text-sm text-gray-500">顯示在Header和Footer的網站名稱</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>網站標誌圖片 URL</Label>
+              <Input 
+                value={settingsForm.site_logo_url || ''} 
+                onChange={e => setSettingsForm({
+                  ...settingsForm, 
+                  site_logo_url: e.target.value
+                })} 
+                placeholder="/images/logo-simple.svg"
+              />
+              <p className="text-sm text-gray-500">顯示在Header左上角的標誌圖片</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>網站圖標 (Favicon) URL</Label>
+              <Input 
+                value={settingsForm.site_favicon_url || ''} 
+                onChange={e => setSettingsForm({
+                  ...settingsForm, 
+                  site_favicon_url: e.target.value
+                })} 
+                placeholder="/favicon.svg"
+              />
+              <p className="text-sm text-gray-500">瀏覽器標籤頁顯示的小圖標</p>
+            </div>
           </div>
 
           {/* Telegram 通知設置 */}

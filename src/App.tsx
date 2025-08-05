@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useSettingsStore } from '@/lib/store';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AnnouncementBanner from '@/components/AnnouncementBanner';
@@ -31,8 +32,12 @@ const ScrollToTop = () => {
 
 function App() {
   const { toast } = useToast();
+  const { loadSettings } = useSettingsStore();
 
   useEffect(() => {
+    // 初始化系統設置（包括品牌設置）
+    loadSettings();
+
     // 全局錯誤處理事件
     const handleError = (event: ErrorEvent) => {
       console.error("全局錯誤捕獲:", event.error);
@@ -46,7 +51,7 @@ function App() {
     return () => {
       window.removeEventListener("error", handleError);
     };
-  }, [toast]);
+  }, [toast, loadSettings]);
   
   return (
     <Router>

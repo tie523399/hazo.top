@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, ChevronDown, Waves } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useCartStore } from '@/lib/store';
+import { useCartStore, useSettingsStore } from '@/lib/store';
 import { categoriesAPI } from '@/lib/api';
 import {
   Accordion,
@@ -15,6 +15,7 @@ import {
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { itemCount } = useCartStore();
+  const { settings } = useSettingsStore();
   const [logoClickCount, setLogoClickCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -279,8 +280,20 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="hazo-logo" onClick={handleLogoClick}>
-              <Waves className="hazo-wave-icon" size={24} />
-              <span>HAZO</span>
+              {settings?.site_logo_url ? (
+                <img 
+                  src={settings.site_logo_url} 
+                  alt={settings?.site_title || 'HAZO'}
+                  className="h-8 w-auto mr-2"
+                  onError={(e) => {
+                    // 如果圖片加載失敗，顯示默認圖標和文字
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Waves className="hazo-wave-icon" size={24} />
+              )}
+              <span>{settings?.site_title || 'HAZO'}</span>
             </div>
           </div>
 
@@ -392,8 +405,20 @@ const Header: React.FC = () => {
                 }, 2000);
               }}
             >
-              <Waves size={20} />
-              <span className="text-lg">HAZO</span>
+              {settings?.site_logo_url ? (
+                <img 
+                  src={settings.site_logo_url} 
+                  alt={settings?.site_title || 'HAZO'}
+                  className="h-6 w-auto mr-2"
+                  onError={(e) => {
+                    // 如果圖片加載失敗，顯示默認圖標
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Waves size={20} />
+              )}
+              <span className="text-lg">{settings?.site_title || 'HAZO'}</span>
             </div>
           <Button
             type="button"

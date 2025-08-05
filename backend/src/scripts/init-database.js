@@ -135,7 +135,10 @@ const createTables = async () => {
       ('telegram_chat_id', ''),
       ('hero_image_url', '/images/itay-kabalo-b3sel60dv8a-unsplash.jpg'),
       ('show_product_reviews', 'true'),
-      ('show_product_preview', 'true')
+      ('show_product_preview', 'true'),
+      ('site_logo_url', '/images/logo-simple.svg'),
+      ('site_favicon_url', '/favicon.svg'),
+      ('site_title', 'HAZO')
     `);
 
     // 首頁設置表
