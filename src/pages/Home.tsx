@@ -148,7 +148,7 @@ const Home: React.FC = () => {
       subtitle: homepageSettings.hero2.subtitle || '時尚設計，品味生活',
       content: homepageSettings.hero2.content,
       image: homepageSettings.hero2.image_url || '/images/ilia_fabric_device_main.png',
-      category: homepageSettings.hero2.button_link || 'cartridge',
+      category: homepageSettings.hero2.button_link || '3short',
       gradient: 'from-purple-900/70 via-indigo-900/60 to-blue-900/70',
       accentColor: 'indigo',
       is_active: homepageSettings.hero2.is_active
