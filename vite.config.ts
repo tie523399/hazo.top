@@ -22,7 +22,9 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html'),
       }
-    }
+    },
+    // 確保每次構建都有新的檔案名（避免緩存問題）
+    assetsInlineLimit: 0,
   },
   publicDir: 'public'
 })

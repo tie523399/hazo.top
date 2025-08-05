@@ -56,7 +56,7 @@ router.get('/all', authenticateToken, async (req, res) => {
 
 // 創建新分類
 router.post('/', authenticateToken, async (req, res) => {
-  const { name, slug, description, display_order = 0, is_active = true } = req.body;
+  const { name, slug, description, display_order = 0, is_active = true, image_url } = req.body;
   
   if (!name || !slug) {
     return res.status(400).json({ error: '名稱和標識符為必填' });
@@ -70,9 +70,9 @@ router.post('/', authenticateToken, async (req, res) => {
     }
     
     const result = await dbAsync.run(
-      `INSERT INTO categories (name, slug, description, display_order, is_active) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [name, slug, description, display_order, is_active ? 1 : 0]
+      `INSERT INTO categories (name, slug, description, display_order, is_active, image_url) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, slug, description, display_order, is_active ? 1 : 0, image_url || '']
     );
     
     const newCategory = await dbAsync.get('SELECT * FROM categories WHERE id = ?', result.lastID);
@@ -86,7 +86,7 @@ router.post('/', authenticateToken, async (req, res) => {
 // 更新分類
 router.put('/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { name, slug, description, display_order, is_active } = req.body;
+  const { name, slug, description, display_order, is_active, image_url } = req.body;
   
   try {
     const category = await dbAsync.get('SELECT * FROM categories WHERE id = ?', id);
@@ -107,7 +107,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     
     await dbAsync.run(
       `UPDATE categories 
-       SET name = ?, slug = ?, description = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+       SET name = ?, slug = ?, description = ?, display_order = ?, is_active = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
       [
         name || category.name,
@@ -115,6 +115,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         description !== undefined ? description : category.description,
         display_order !== undefined ? display_order : category.display_order,
         is_active !== undefined ? (is_active ? 1 : 0) : category.is_active,
+        image_url !== undefined ? image_url : category.image_url,
         id
       ]
     );

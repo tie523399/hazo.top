@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Upload, X } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { categoriesAPI } from "@/lib/api";
 
@@ -18,6 +18,7 @@ interface Category {
   description?: string;
   display_order: number;
   is_active: boolean;
+  image_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -32,19 +33,81 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
   onFetchData
 }) => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // 分類表單狀態
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [categoryForm, setCategoryForm] = useState<Partial<Category>>({
     is_active: true,
-    display_order: 0
+    display_order: 0,
+    image_url: ''
   });
+  const [uploading, setUploading] = useState(false);
 
 
   // 重置表單
   const resetForm = () => {
     setEditingCategory(null);
-    setCategoryForm({ is_active: true, display_order: 0 });
+    setCategoryForm({ is_active: true, display_order: 0, image_url: '' });
+  };
+
+  // 圖片上傳處理
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('圖片上傳失敗');
+      }
+
+      const data = await response.json();
+      setCategoryForm(prev => ({ ...prev, image_url: data.filePath }));
+      
+      toast({
+        title: '上傳成功',
+        description: '分類圖片上傳成功',
+      });
+    } catch (error) {
+      console.error('圖片上傳錯誤:', error);
+      toast({
+        title: '上傳失敗',
+        description: '圖片上傳失敗，請重試',
+        variant: 'destructive'
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // 處理文件選擇
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: '文件過大',
+          description: '圖片大小不能超過5MB',
+          variant: 'destructive'
+        });
+        return;
+      }
+      handleImageUpload(file);
+    }
+  };
+
+  // 移除圖片
+  const handleRemoveImage = () => {
+    setCategoryForm(prev => ({ ...prev, image_url: '' }));
   };
 
   // 分類CRUD操作
@@ -148,7 +211,55 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 />
               </div>
               
-
+              {/* 分類圖片上傳 */}
+              <div>
+                <Label>分類圖片</Label>
+                <div className="space-y-2">
+                  {categoryForm.image_url ? (
+                    <div className="relative">
+                      <img
+                        src={`${categoryForm.image_url}?v=${Date.now()}`}
+                        alt="分類圖片預覽"
+                        className="w-full h-32 object-cover rounded-md border"
+                        onError={(e) => {
+                          console.error('分類圖片載入失敗:', categoryForm.image_url);
+                          e.currentTarget.src = '/images/whale-logo.png';
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={handleRemoveImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center">
+                      <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-600 mb-2">點擊上傳分類圖片</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                      >
+                        {uploading ? '上傳中...' : '選擇圖片'}
+                      </Button>
+                    </div>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                </div>
+              </div>
               
               <div className="flex items-center space-x-2">
                 <Switch
@@ -190,6 +301,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>圖片</TableHead>
                     <TableHead>名稱</TableHead>
                     <TableHead>標識符</TableHead>
                     <TableHead>描述</TableHead>
@@ -201,6 +313,22 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 <TableBody>
                   {(Array.isArray(categories) ? categories : []).map(category => (
                     <TableRow key={category.id}>
+                      <TableCell>
+                        {category.image_url ? (
+                          <img
+                            src={`${category.image_url}?v=${category.id}`}
+                            alt={category.name}
+                            className="w-12 h-12 object-cover rounded-md border"
+                            onError={(e) => {
+                              e.currentTarget.src = '/images/whale-logo.png';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-md border flex items-center justify-center">
+                            <Upload className="h-6 w-6 text-gray-400" />
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell>{category.name}</TableCell>
                       <TableCell>{category.slug}</TableCell>
                       <TableCell>{category.description || '-'}</TableCell>
