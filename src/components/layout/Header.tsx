@@ -29,14 +29,21 @@ const Header: React.FC = () => {
     const newCount = logoClickCount + 1;
     setLogoClickCount(newCount);
     
-    console.log('Logo點擊次數:', newCount); // 調試用
+    console.log('Logo點擊次數:', newCount);
     
     if (newCount >= 5) {
-      console.log('跳轉到管理頁面'); // 調試用
+      console.log('跳轉到管理頁面');
+      // 檢查是否已有管理員token
+      const token = localStorage.getItem('admin_token');
+      if (token) {
+        console.log('檢測到管理員token，直接進入管理頁面');
+      } else {
+        console.log('無管理員token，將顯示登錄頁面');
+      }
       navigate('/admin');
       setLogoClickCount(0);
     } else {
-      console.log('跳轉到商品頁面'); // 調試用
+      console.log('跳轉到商品頁面');
       navigate('/products');
     }
     
@@ -48,7 +55,7 @@ const Header: React.FC = () => {
     // 2秒後重置計數器
     clickTimer.current = setTimeout(() => {
       setLogoClickCount(0);
-      console.log('重置點擊計數器'); // 調試用
+      console.log('重置點擊計數器');
     }, 2000);
   };
 
@@ -399,15 +406,22 @@ const Header: React.FC = () => {
                 const newCount = logoClickCount + 1;
                 setLogoClickCount(newCount);
                 
-                console.log('移動端Logo點擊次數:', newCount); // 調試用
+                console.log('移動端Logo點擊次數:', newCount);
                 
                 if (newCount >= 5) {
-                  console.log('移動端跳轉到管理頁面'); // 調試用
+                  console.log('移動端跳轉到管理頁面');
+                  // 檢查是否已有管理員token
+                  const token = localStorage.getItem('admin_token');
+                  if (token) {
+                    console.log('移動端檢測到管理員token，直接進入管理頁面');
+                  } else {
+                    console.log('移動端無管理員token，將顯示登錄頁面');
+                  }
                   navigate('/admin');
                   setLogoClickCount(0);
                   closeMobileMenu();
                 } else {
-                  console.log('移動端跳轉到商品頁面並關閉選單'); // 調試用
+                  console.log('移動端跳轉到商品頁面並關閉選單');
                   navigate('/products');
                   closeMobileMenu();
                 }
@@ -420,7 +434,7 @@ const Header: React.FC = () => {
                 // 2秒後重置計數器
                 clickTimer.current = setTimeout(() => {
                   setLogoClickCount(0);
-                  console.log('移動端重置點擊計數器'); // 調試用
+                  console.log('移動端重置點擊計數器');
                 }, 2000);
               }}
             >

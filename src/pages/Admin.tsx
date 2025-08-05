@@ -168,7 +168,16 @@ const AdminPage: React.FC = () => {
 
   // --- Data Fetching & Auth ---
   const fetchAllData = useCallback(async () => {
+    // 再次確認認證狀態
+    const token = localStorage.getItem('admin_token');
+    if (!token || !isAuthenticated) {
+      console.log('⚠️ 未認證，停止載入數據');
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
+    console.log('📊 開始載入管理面板數據...');
     try {
       const [stats, imgs, prods, coups, ancs, adms, sets, cats, homes, pageContentList] = await Promise.all([
         getDashboardStats(), 
@@ -210,20 +219,35 @@ const AdminPage: React.FC = () => {
     } finally { 
       setLoading(false); 
     }
-  }, [logout, navigate]);
+  }, [logout, navigate, isAuthenticated]);
   
   // --- Effects ---
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
+    console.log('🔍 檢查管理員token:', token ? '存在' : '不存在');
+    
     if (token) {
-      adminAPI.verify().then(() => setAuthenticated(true)).catch(() => logout());
+      console.log('🔐 驗證管理員token...');
+      adminAPI.verify()
+        .then(() => {
+          console.log('✅ 管理員token驗證成功');
+          setAuthenticated(true);
+        })
+        .catch((error) => {
+          console.log('❌ 管理員token驗證失敗:', error);
+          logout();
+        });
     } else { 
+      console.log('ℹ️ 無管理員token，顯示登錄頁面');
       setLoading(false); 
     }
   }, [setAuthenticated, logout]);
 
   useEffect(() => { 
-    if (isAuthenticated) fetchAllData(); 
+    if (isAuthenticated) {
+      console.log('🚀 管理員已認證，開始載入數據...');
+      fetchAllData();
+    }
   }, [isAuthenticated, fetchAllData]);
   
   // --- Handlers ---
