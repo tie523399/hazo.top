@@ -17,6 +17,7 @@ const ordersRouter = require('./routes/orders');
 const sitemapRouter = require('./routes/sitemap');
 const categoriesRouter = require('./routes/categories');
 const homepageRouter = require('./routes/homepage');
+const footerRouter = require('./routes/footer');
 const cvsRouter = require('./routes/cvs');
 const pageContentsRouter = require('./routes/page-contents');
 
@@ -85,6 +86,7 @@ app.use('/api/settings', settingsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/homepage', homepageRouter);
+app.use('/api/footer', footerRouter);
 app.use('/api/cvs', cvsRouter);
 app.use('/api/page-contents', pageContentsRouter);
 app.use('/api', sitemapRouter);

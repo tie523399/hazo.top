@@ -156,6 +156,23 @@ const createTables = async () => {
       )
     `);
 
+    // 頁腳設置表
+    await dbAsync.run(`
+      CREATE TABLE IF NOT EXISTS footer_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        section TEXT NOT NULL UNIQUE,
+        title TEXT,
+        content TEXT,
+        link_url TEXT,
+        image_url TEXT,
+        icon_name TEXT,
+        display_order INTEGER DEFAULT 0,
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // 頁面內容管理表
     await dbAsync.run(`
       CREATE TABLE IF NOT EXISTS page_contents (
@@ -365,6 +382,118 @@ const initializeDatabase = async () => {
         );
       }
       console.log('✅ 默認首頁設置已創建。');
+    }
+
+    // 檢查並創建默認頁腳設置
+    const footerRow = await dbAsync.get('SELECT COUNT(*) as count FROM footer_settings');
+    if (footerRow.count === 0) {
+      console.log('🦶 檢測到無頁腳設置，正在創建默認設置...');
+      const defaultFooterSettings = [
+        {
+          section: 'company_info',
+          title: 'HAZO',
+          content: 'HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。',
+          image_url: '/images/logo-simple.svg',
+          display_order: 1,
+          is_active: 1
+        },
+        {
+          section: 'feature_1',
+          title: '正品保證',
+          icon_name: 'Shield',
+          display_order: 2,
+          is_active: 1
+        },
+        {
+          section: 'feature_2', 
+          title: '快速配送',
+          icon_name: 'Clock',
+          display_order: 3,
+          is_active: 1
+        },
+        {
+          section: 'social_facebook',
+          title: 'Facebook',
+          link_url: '#',
+          icon_name: 'Facebook',
+          display_order: 4,
+          is_active: 1
+        },
+        {
+          section: 'social_twitter',
+          title: 'Twitter', 
+          link_url: '#',
+          icon_name: 'Twitter',
+          display_order: 5,
+          is_active: 1
+        },
+        {
+          section: 'social_instagram',
+          title: 'Instagram',
+          link_url: '#', 
+          icon_name: 'Instagram',
+          display_order: 6,
+          is_active: 1
+        },
+        {
+          section: 'contact_phone',
+          title: '聯絡電話',
+          content: '02-1234-5678',
+          icon_name: 'Phone',
+          display_order: 7,
+          is_active: 1
+        },
+        {
+          section: 'contact_email',
+          title: '電子郵箱',
+          content: 'service@hazo.com.tw',
+          icon_name: 'Mail',
+          display_order: 8,
+          is_active: 1
+        },
+        {
+          section: 'contact_address',
+          title: '聯絡地址',
+          content: '台北市信義區松高路',
+          icon_name: 'MapPin',
+          display_order: 9,
+          is_active: 1
+        },
+        {
+          section: 'business_hours',
+          title: '營業時間',
+          content: JSON.stringify({
+            weekdays: '週一至週五：09:00-18:00',
+            weekends: '週六週日：10:00-17:00'
+          }),
+          display_order: 10,
+          is_active: 1
+        },
+        {
+          section: 'copyright',
+          title: '版權資訊',
+          content: '© 2024 HAZO. 版權所有。',
+          display_order: 11,
+          is_active: 1
+        },
+        {
+          section: 'age_notice',
+          title: '年齡提醒',
+          content: '本網站僅供18歲以上成年人使用。電子煙含有尼古丁，使用前請詳閱產品說明。',
+          display_order: 12,
+          is_active: 1
+        }
+      ];
+      
+      for (const setting of defaultFooterSettings) {
+        await dbAsync.run(
+          `INSERT INTO footer_settings (section, title, content, link_url, image_url, icon_name, display_order, is_active) 
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [setting.section, setting.title, setting.content, setting.link_url, 
+           setting.image_url, setting.icon_name, setting.display_order, setting.is_active]
+        );
+      }
+      console.log('✅ 默認頁腳設置已創建。');
     }
     
     // 檢查並創建默認頁面內容

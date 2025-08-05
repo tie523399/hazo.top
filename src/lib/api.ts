@@ -482,4 +482,77 @@ export const pageContentsAPI = {
   }
 };
 
+// 頁腳設置相關API
+export const footerAPI = {
+  // 獲取所有頁腳設置（公開）
+  getAllSettings: async () => {
+    try {
+      const response = await api.get('/footer');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '獲取頁腳設置失敗');
+    }
+  },
+
+  // 獲取所有頁腳設置（管理員，包含停用的）
+  getAllSettingsAdmin: async () => {
+    try {
+      const response = await api.get('/footer/all');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '獲取頁腳設置失敗');
+    }
+  },
+
+  // 獲取特定區段設置
+  getSection: async (section: string) => {
+    try {
+      const response = await api.get(`/footer/${section}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '獲取頁腳設置失敗');
+    }
+  },
+
+  // 更新特定區段設置
+  updateSection: async (section: string, data: any) => {
+    try {
+      const response = await api.put(`/footer/${section}`, data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '更新頁腳設置失敗');
+    }
+  },
+
+  // 創建新設置
+  createSetting: async (data: any) => {
+    try {
+      const response = await api.post('/footer', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '創建頁腳設置失敗');
+    }
+  },
+
+  // 刪除設置
+  deleteSetting: async (section: string) => {
+    try {
+      const response = await api.delete(`/footer/${section}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '刪除頁腳設置失敗');
+    }
+  },
+
+  // 批次更新設置
+  batchUpdate: async (settings: any[]) => {
+    try {
+      const response = await api.post('/footer/batch-update', { settings });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '批次更新失敗');
+    }
+  }
+};
+
 export default api;

@@ -1,10 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Waves, Clock, Shield } from 'lucide-react';
-import { categoriesAPI } from '@/lib/api';
+import { 
+  Mail, Phone, MapPin, Facebook, Twitter, Instagram, Waves, Clock, Shield,
+  Star, Heart, Award, Truck, CreditCard, Lock, Youtube, Linkedin
+} from 'lucide-react';
+import { categoriesAPI, footerAPI } from '@/lib/api';
+
+interface FooterSetting {
+  id?: number;
+  section: string;
+  title?: string;
+  content?: string;
+  link_url?: string;
+  image_url?: string;
+  icon_name?: string;
+  display_order: number;
+  is_active: boolean;
+}
 
 const Footer: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
+  const [footerSettings, setFooterSettings] = useState<FooterSetting[]>([]);
+
+  // 圖標映射
+  const iconMap: Record<string, any> = {
+    Shield, Clock, Phone, Mail, MapPin, Facebook, Twitter, Instagram,
+    Youtube, Linkedin, Star, Heart, Award, Truck, CreditCard, Lock, Waves
+  };
+
+  // 獲取圖標組件
+  const getIconComponent = (iconName?: string) => {
+    if (!iconName) return null;
+    return iconMap[iconName] || Star;
+  };
 
   // 獲取分類數據
   useEffect(() => {
@@ -19,6 +47,60 @@ const Footer: React.FC = () => {
     };
     fetchCategories();
   }, []);
+
+  // 獲取頁腳設置
+  useEffect(() => {
+    const fetchFooterSettings = async () => {
+      try {
+        const response = await footerAPI.getAllSettings();
+        setFooterSettings(response.data || []);
+      } catch (error) {
+        console.error('獲取頁腳設置失敗:', error);
+      }
+    };
+    fetchFooterSettings();
+  }, []);
+
+  // 獲取特定區段的設置
+  const getSetting = (section: string) => {
+    return footerSettings.find(s => s.section === section && s.is_active);
+  };
+
+  // 獲取社交媒體連結
+  const getSocialLinks = () => {
+    return footerSettings.filter(s => 
+      s.section.startsWith('social_') && s.is_active
+    ).sort((a, b) => a.display_order - b.display_order);
+  };
+
+  // 獲取特色功能
+  const getFeatures = () => {
+    return footerSettings.filter(s => 
+      s.section.startsWith('feature_') && s.is_active
+    ).sort((a, b) => a.display_order - b.display_order);
+  };
+
+  // 解析營業時間
+  const parseBusinessHours = (content?: string) => {
+    if (!content) return null;
+    try {
+      return JSON.parse(content);
+    } catch {
+      return null;
+    }
+  };
+
+  const companyInfo = getSetting('company_info');
+  const features = getFeatures();
+  const socialLinks = getSocialLinks();
+  const contactPhone = getSetting('contact_phone');
+  const contactEmail = getSetting('contact_email');
+  const contactAddress = getSetting('contact_address');
+  const businessHours = getSetting('business_hours');
+  const copyright = getSetting('copyright');
+  const ageNotice = getSetting('age_notice');
+  
+  const businessHoursData = parseBusinessHours(businessHours?.content);
 
   return (
     <>
@@ -187,35 +269,53 @@ const Footer: React.FC = () => {
             {/* Company Info */}
             <div className="space-y-4">
               <div className="hazo-footer-logo">
-                <Waves className="footer-wave-icon" size={20} />
-                <span>HAZO</span>
+                {companyInfo?.image_url ? (
+                  <img 
+                    src={companyInfo.image_url} 
+                    alt={companyInfo.title || 'Logo'}
+                    className="h-6 w-6 object-contain"
+                  />
+                ) : (
+                  <Waves className="footer-wave-icon" size={20} />
+                )}
+                <span>{companyInfo?.title || 'HAZO'}</span>
               </div>
+              
               <p className="text-sm leading-relaxed opacity-90">
-                HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。
+                {companyInfo?.content || 'HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。'}
               </p>
               
-              <div className="footer-features">
-                <div className="footer-feature">
-                  <Shield className="footer-feature-icon" size={16} />
-                  <span>正品保證</span>
+              {features.length > 0 && (
+                <div className="footer-features">
+                  {features.map((feature) => {
+                    const IconComponent = getIconComponent(feature.icon_name);
+                    return (
+                      <div key={feature.section} className="footer-feature">
+                        {IconComponent && <IconComponent className="footer-feature-icon" size={16} />}
+                        <span>{feature.title}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="footer-feature">
-                  <Clock className="footer-feature-icon" size={16} />
-                  <span>快速配送</span>
-                </div>
-              </div>
+              )}
 
-              <div className="footer-social-links">
-                <a href="#" className="footer-social-link" aria-label="Facebook">
-                  <Facebook size={18} />
-                </a>
-                <a href="#" className="footer-social-link" aria-label="Twitter">
-                  <Twitter size={18} />
-                </a>
-                <a href="#" className="footer-social-link" aria-label="Instagram">
-                  <Instagram size={18} />
-                </a>
-              </div>
+              {socialLinks.length > 0 && (
+                <div className="footer-social-links">
+                  {socialLinks.map((social) => {
+                    const IconComponent = getIconComponent(social.icon_name);
+                    return (
+                      <a 
+                        key={social.section}
+                        href={social.link_url || '#'} 
+                        className="footer-social-link" 
+                        aria-label={social.title}
+                      >
+                        {IconComponent && <IconComponent size={18} />}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Quick Links */}
@@ -282,27 +382,35 @@ const Footer: React.FC = () => {
             <div className="space-y-4">
               <h3 className="footer-section-title">聯絡我們</h3>
               <div className="space-y-3">
-                <div className="footer-contact-item">
-                  <Phone className="footer-contact-icon" size={16} />
-                  <span className="text-sm">02-1234-5678</span>
-                </div>
-                <div className="footer-contact-item">
-                  <Mail className="footer-contact-icon" size={16} />
-                  <span className="text-sm">service@hazo.com.tw</span>
-                </div>
-                <div className="footer-contact-item">
-                  <MapPin className="footer-contact-icon" size={16} />
-                  <span className="text-sm">台北市信義區松高路</span>
-                </div>
+                {contactPhone && (
+                  <div className="footer-contact-item">
+                    <Phone className="footer-contact-icon" size={16} />
+                    <span className="text-sm">{contactPhone.content}</span>
+                  </div>
+                )}
+                {contactEmail && (
+                  <div className="footer-contact-item">
+                    <Mail className="footer-contact-icon" size={16} />
+                    <span className="text-sm">{contactEmail.content}</span>
+                  </div>
+                )}
+                {contactAddress && (
+                  <div className="footer-contact-item">
+                    <MapPin className="footer-contact-icon" size={16} />
+                    <span className="text-sm">{contactAddress.content}</span>
+                  </div>
+                )}
               </div>
               
-              <div className="mt-4 p-3 bg-black/20 rounded-lg">
-                <div className="text-sm font-medium mb-1">營業時間</div>
-                <div className="text-xs opacity-90">
-                  週一至週五：09:00-18:00<br />
-                  週六週日：10:00-17:00
+              {businessHoursData && (
+                <div className="mt-4 p-3 bg-black/20 rounded-lg">
+                  <div className="text-sm font-medium mb-1">{businessHours?.title || '營業時間'}</div>
+                  <div className="text-xs opacity-90">
+                    {businessHoursData.weekdays && <div>{businessHoursData.weekdays}</div>}
+                    {businessHoursData.weekends && <div>{businessHoursData.weekends}</div>}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -310,7 +418,7 @@ const Footer: React.FC = () => {
           <div className="footer-bottom mt-12 pt-6 border-t border-white/20">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-sm opacity-80 text-center md:text-left">
-                © 2024 HAZO. 版權所有。
+                {copyright?.content || '© 2024 HAZO. 版權所有。'}
               </div>
               <div className="flex space-x-6 text-sm">
                 <a href="#" className="footer-link">隱私政策</a>
@@ -319,11 +427,13 @@ const Footer: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-4 text-center">
-              <p className="text-xs opacity-70">
-                本網站僅供18歲以上成年人使用。電子煙含有尼古丁，使用前請詳閱產品說明。
-              </p>
-            </div>
+            {ageNotice && (
+              <div className="mt-4 text-center">
+                <p className="text-xs opacity-70">
+                  {ageNotice.content}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </footer>

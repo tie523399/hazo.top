@@ -31,6 +31,7 @@ import CategoryManagement from '@/components/admin/CategoryManagement';
 import CouponManagement from '@/components/admin/CouponManagement';
 import AnnouncementManagement from '@/components/admin/AnnouncementManagement';
 import HomepageManagement from '@/components/admin/HomepageManagement';
+import FooterManagement from '@/components/admin/FooterManagement';
 import SystemSettings from '@/components/admin/SystemSettings';
 import UserManagement from '@/components/admin/UserManagement';
 import PageContentManagement from '@/components/admin/PageContentManagement';
@@ -313,12 +314,15 @@ const AdminPage: React.FC = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="dashboard">
             <Package className="mr-2 h-4 w-4"/>儀表板
           </TabsTrigger>
           <TabsTrigger value="homepage">
             <Home className="mr-2 h-4 w-4"/>首頁
+          </TabsTrigger>
+          <TabsTrigger value="footer">
+            🦶頁腳
           </TabsTrigger>
           <TabsTrigger value="products">
             <Boxes className="mr-2 h-4 w-4"/>產品
@@ -364,6 +368,15 @@ const AdminPage: React.FC = () => {
             uploading={uploading}
             setUploading={setUploading}
             onFetchData={fetchAllData}
+          />
+        </TabsContent>
+
+        <TabsContent value="footer" className="mt-6">
+          <FooterManagement
+            images={images}
+            setImages={setImages}
+            uploading={uploading}
+            setUploading={setUploading}
           />
         </TabsContent>
         
