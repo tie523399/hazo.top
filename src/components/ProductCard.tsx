@@ -202,9 +202,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   "scale-100 opacity-100",
                   "group-hover:scale-110"
                 )}
-                onLoad={() => setImageLoaded(true)}
+                onLoad={() => {
+                  console.log('ProductCard 圖片載入成功:', {
+                    productId: product.id,
+                    imageUrl: product.image_url,
+                    fullSrc: product.image_url ? `${product.image_url}?v=${product.id}` : '/images/whale-logo.png'
+                  });
+                  setImageLoaded(true);
+                }}
                 onError={(e) => {
-                  console.error('商品圖片載入失敗:', product.image_url);
+                  console.error('ProductCard 商品圖片載入失敗:', {
+                    productId: product.id,
+                    imageUrl: product.image_url
+                  });
                   e.currentTarget.src = '/images/whale-logo.png';
                   setImageLoaded(true);
                 }}

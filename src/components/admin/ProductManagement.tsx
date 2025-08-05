@@ -68,6 +68,7 @@ const ProductImageManager: React.FC<{
     if (!productId) return;
     try {
       const response = await adminAPI.getProductImages(productId);
+      console.log('📷 獲取到的圖片數據:', response.data.images);
       setImages(response.data.images || []);
     } catch (error: any) {
       console.error('獲取產品圖片失敗:', error);
@@ -90,6 +91,12 @@ const ProductImageManager: React.FC<{
     setUploading(true);
     try {
       const uploadResult = await uploadImage(file);
+      console.log('🎯 圖片上傳結果:', {
+        fileName: file.name,
+        fileSize: file.size,
+        uploadResult: uploadResult
+      });
+      
       await adminAPI.addProductImage(productId, {
         image_url: uploadResult.filePath,
         alt_text: `產品圖片`,
@@ -308,11 +315,22 @@ const ProductImageManager: React.FC<{
 
               {/* 圖片 */}
               <img
-                src={`${image.image_url}?v=${image.id || Date.now()}`}
+                src={`${image.image_url}?v=${image.id}`}
                 alt={image.alt_text || `產品圖片 ${index + 1}`}
                 className="w-full h-32 object-cover"
+                onLoad={() => {
+                  console.log('圖片載入成功:', {
+                    id: image.id,
+                    url: image.image_url,
+                    fullSrc: `${image.image_url}?v=${image.id}`
+                  });
+                }}
                 onError={(e) => {
-                  console.error('圖片載入失敗:', image.image_url);
+                  console.error('圖片載入失敗:', {
+                    id: image.id,
+                    url: image.image_url,
+                    fullSrc: `${image.image_url}?v=${image.id}`
+                  });
                   e.currentTarget.src = '/images/whale-logo.png';
                 }}
               />
@@ -548,13 +566,31 @@ const ProductManagement: React.FC<ProductManagementProps> = ({
                 />
               </div>
               
-              {/* 產品圖片管理 */}
-              <div>
-                <ProductImageManager
-                  productId={editingProduct?.id || null}
-                  onImageChange={onFetchData}
-                />
-              </div>
+              {/* 產品圖片管理 - 只在編輯模式時顯示 */}
+              {editingProduct && (
+                <div>
+                  <Label className="text-base font-medium">產品圖片管理</Label>
+                  <ProductImageManager
+                    productId={editingProduct.id}
+                    onImageChange={onFetchData}
+                  />
+                </div>
+              )}
+              
+              {/* 新增商品時的提示 */}
+              {!editingProduct && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-blue-700">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    <span className="font-medium">圖片管理說明</span>
+                  </div>
+                  <p className="mt-2 text-sm text-blue-600">
+                    請先創建商品，然後點擊編輯按鈕來管理商品圖片。這樣可以確保圖片正確關聯到商品。
+                  </p>
+                </div>
+              )}
               
               <div>
                 <Label>產品描述</Label>
@@ -568,6 +604,12 @@ const ProductManagement: React.FC<ProductManagementProps> = ({
               <Button type="submit" className="w-full">
                 {editingProduct ? '更新產品' : '新增產品'}
               </Button>
+              
+              {!editingProduct && (
+                <p className="text-sm text-gray-500 text-center mt-2">
+                  💡 創建商品後，可點擊編輯按鈕上傳商品圖片
+                </p>
+              )}
               
               {editingProduct && (
                 <Button

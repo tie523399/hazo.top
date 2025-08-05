@@ -220,10 +220,19 @@ router.post('/upload-image', authenticateToken, upload.single('image'), (req, re
   if (!req.file) {
     return res.status(400).json({ success: false, message: '沒有上傳檔案' });
   }
+  
+  const filePath = `/images/${req.file.filename}`;
+  console.log('🎯 圖片上傳成功:', {
+    originalName: req.file.originalname,
+    filename: req.file.filename,
+    size: req.file.size,
+    filePath: filePath
+  });
+  
   res.json({ 
     success: true, 
     message: '圖片上傳成功', 
-    filePath: `/images/${req.file.filename}` 
+    filePath: filePath
   });
 }, (error, req, res, next) => {
   // 處理 multer 的錯誤
@@ -1027,6 +1036,16 @@ router.get('/products/:id/images', authenticateToken, async (req, res) => {
       ORDER BY display_order ASC, is_primary DESC
     `, [productId]);
     
+    console.log('📷 獲取產品圖片 API:', {
+      productId: productId,
+      imageCount: images.length,
+      images: images.map(img => ({
+        id: img.id,
+        image_url: img.image_url,
+        is_primary: img.is_primary
+      }))
+    });
+    
     res.json({ success: true, images });
   } catch (error) {
     console.error('獲取產品圖片失敗:', error);
@@ -1039,6 +1058,14 @@ router.post('/products/:id/images', authenticateToken, async (req, res) => {
   try {
     const productId = req.params.id;
     const { image_url, alt_text, display_order = 0, is_primary = false } = req.body;
+    
+    console.log('➕ 添加產品圖片 API:', {
+      productId: productId,
+      image_url: image_url,
+      alt_text: alt_text,
+      display_order: display_order,
+      is_primary: is_primary
+    });
     
     if (!image_url) {
       return res.status(400).json({ error: '圖片URL不能為空' });
