@@ -363,10 +363,12 @@ const ProductImageManager: React.FC<{
                 </div>
               </div>
 
-              {/* 順序標籤 - 調試顯示 */}
+              {/* 順序標籤 */}
               <div className="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                {console.log('順序調試:', { id: image.id, display_order: image.display_order, index: index })}
-                {Number(image.display_order ?? index) + 1}
+                {(() => {
+                  console.log('順序調試:', { id: image.id, display_order: image.display_order, index: index });
+                  return Number(image.display_order ?? index) + 1;
+                })()}
               </div>
             </div>
           ))}
