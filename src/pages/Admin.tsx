@@ -176,6 +176,12 @@ const AdminPage: React.FC = () => {
       return;
     }
     
+    // 防止重複請求
+    if (loading) {
+      console.log('⏳ 數據正在載入中，跳過重複請求');
+      return;
+    }
+    
     setLoading(true);
     console.log('📊 開始載入管理面板數據...');
     try {
@@ -213,13 +219,17 @@ const AdminPage: React.FC = () => {
     } catch (err: any) {
       console.error('載入資料失敗:', err);
       if (err.response?.status === 401) { 
+        console.log('⚠️ 管理面板載入時收到401，登出用戶');
         logout(); 
-        navigate('/admin'); 
+        // 不再強制重新導航，避免循環
+      } else {
+        // 其他錯誤的處理
+        console.error('非認證錯誤:', err.message);
       }
     } finally { 
       setLoading(false); 
     }
-  }, [logout, navigate, isAuthenticated]);
+  }, [logout, navigate, isAuthenticated, loading]);
   
   // --- Effects ---
   useEffect(() => {

@@ -47,12 +47,24 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      console.log('🔐 收到401錯誤，清除token');
       localStorage.removeItem('admin_token');
-      // 檢查當前路徑，如果在管理員頁面就導航到管理員登錄頁面，否則導航到首頁
-      if (window.location.pathname.startsWith('/admin')) {
-        window.location.href = '/admin';
+      
+      // 避免重複重定向，檢查當前是否已在正確頁面
+      const currentPath = window.location.pathname;
+      
+      if (currentPath.startsWith('/admin')) {
+        // 如果已經在管理頁面且沒有token，不需要重定向
+        const hasToken = localStorage.getItem('admin_token');
+        if (hasToken) {
+          console.log('🔄 重定向到管理登錄頁面');
+          window.location.href = '/admin';
+        } else {
+          console.log('ℹ️ 已在管理頁面，無需重定向');
+        }
       } else {
-        window.location.href = '/';
+        // 如果在其他頁面，只有在需要認證的操作時才重定向
+        console.log('ℹ️ 在非管理頁面收到401，繼續正常使用');
       }
     }
     return Promise.reject(error);
