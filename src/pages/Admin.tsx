@@ -20,7 +20,7 @@ import {
   Boxes
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { adminAPI, categoriesAPI, homepageAPI, getDashboardStats, getImages } from "@/lib/api";
+import { adminAPI, categoriesAPI, homepageAPI, pageContentsAPI, getDashboardStats, getImages } from "@/lib/api";
 import { useAdminStore, Product } from '@/lib/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -33,6 +33,7 @@ import AnnouncementManagement from '@/components/admin/AnnouncementManagement';
 import HomepageManagement from '@/components/admin/HomepageManagement';
 import SystemSettings from '@/components/admin/SystemSettings';
 import UserManagement from '@/components/admin/UserManagement';
+import PageContentManagement from '@/components/admin/PageContentManagement';
 
 // --- Type Definitions ---
 interface DashboardStats { 
@@ -147,12 +148,13 @@ const AdminPage: React.FC = () => {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSetting[]>([]);
+  const [pageContents, setPageContents] = useState<any[]>([]);
 
   // --- Data Fetching & Auth ---
   const fetchAllData = useCallback(async () => {
     setLoading(true);
     try {
-      const [stats, imgs, prods, coups, ancs, adms, sets, cats, homes] = await Promise.all([
+      const [stats, imgs, prods, coups, ancs, adms, sets, cats, homes, pageContentList] = await Promise.all([
         getDashboardStats(), 
         getImages(), 
         adminAPI.getProducts({ limit: 1000 }),
@@ -161,7 +163,8 @@ const AdminPage: React.FC = () => {
         adminAPI.getAdmins(), 
         adminAPI.getSettings(),
         categoriesAPI.getAllCategories(), 
-        homepageAPI.getAllSettings()
+        homepageAPI.getAllSettings(),
+        pageContentsAPI.getAllPageContents()
       ]);
       
       setDashboardData(stats || {});
@@ -178,6 +181,7 @@ const AdminPage: React.FC = () => {
       );
       setCategories(Array.isArray(cats?.data) ? cats.data : []);
       setHomepageSettings(Array.isArray(homes?.data) ? homes.data : []);
+      setPageContents(Array.isArray(pageContentList) ? pageContentList : []);
     } catch (err: any) {
       console.error('載入資料失敗:', err);
       if (err.response?.status === 401) { 
@@ -334,6 +338,9 @@ const AdminPage: React.FC = () => {
           <TabsTrigger value="settings">
             <Settings className="mr-2 h-4 w-4"/>設置
           </TabsTrigger>
+          <TabsTrigger value="page-contents">
+            📄頁面內容
+          </TabsTrigger>
           <TabsTrigger value="admins">
             <KeyRound className="mr-2 h-4 w-4"/>管理員
           </TabsTrigger>
@@ -410,6 +417,13 @@ const AdminPage: React.FC = () => {
             settings={settings}
             settingsForm={settingsForm}
             setSettingsForm={setSettingsForm}
+            onFetchData={fetchAllData}
+          />
+        </TabsContent>
+        
+        <TabsContent value="page-contents" className="mt-6">
+          <PageContentManagement
+            pageContents={pageContents}
             onFetchData={fetchAllData}
           />
         </TabsContent>

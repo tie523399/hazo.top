@@ -156,6 +156,22 @@ const createTables = async () => {
       )
     `);
 
+    // 頁面內容管理表
+    await dbAsync.run(`
+      CREATE TABLE IF NOT EXISTS page_contents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        page_key TEXT NOT NULL UNIQUE,
+        page_name TEXT NOT NULL,
+        title TEXT,
+        subtitle TEXT,
+        content TEXT,
+        metadata TEXT,
+        is_active BOOLEAN DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // 訂單表
     await dbAsync.run(`
       CREATE TABLE IF NOT EXISTS orders (
@@ -298,6 +314,105 @@ const initializeDatabase = async () => {
         );
       }
       console.log('✅ 默認首頁設置已創建。');
+    }
+    
+    // 檢查並創建默認頁面內容
+    const pageContentRow = await dbAsync.get('SELECT COUNT(*) as count FROM page_contents');
+    if (pageContentRow.count === 0) {
+      console.log('📄 檢測到無頁面內容，正在創建默認內容...');
+      const defaultPageContents = [
+        {
+          page_key: 'shipping',
+          page_name: '配送說明',
+          title: '配送說明',
+          subtitle: '簡單三步驟，輕鬆完成購物流程',
+          content: JSON.stringify({
+            steps: [
+              {
+                step: 1,
+                title: '選擇商品',
+                description: '瀏覽我們精選的電子煙產品，加入購物車',
+                icon: 'ShoppingCart'
+              },
+              {
+                step: 2,
+                title: '結帳付款',
+                description: '選擇便利商店取貨，填寫資料並完成付款',
+                icon: 'CreditCard'
+              },
+              {
+                step: 3,
+                title: '取貨享受',
+                description: '3-5個工作天後，前往指定便利商店取貨',
+                icon: 'Truck'
+              }
+            ],
+            notes: [
+              '支援7-11、全家便利商店取貨',
+              '單筆訂單滿1000元免運費',
+              '取貨期限為7天，逾期將退回'
+            ]
+          }),
+          is_active: 1
+        },
+        {
+          page_key: 'returns',
+          page_name: '退換貨政策',
+          title: '退換貨政策',
+          subtitle: '保障您的購物權益，安心購買',
+          content: JSON.stringify({
+            returnPolicy: {
+              title: '退貨政策',
+              description: '為保障消費者權益，我們提供以下退貨服務：',
+              items: [
+                '商品收到後7天內，如有品質問題可申請退貨',
+                '退貨商品需保持原包裝完整，未使用且無人為損壞',
+                '電子煙主機需附上所有配件及包裝盒',
+                '煙彈類產品一經拆封恕不接受退貨（品質問題除外）',
+                '退貨運費由消費者負擔，品質問題則由本公司承擔'
+              ]
+            },
+            exchangePolicy: {
+              title: '換貨政策',
+              description: '提供便利的換貨服務：',
+              items: [
+                '商品收到後7天內可申請換貨',
+                '僅限相同產品不同規格的換貨',
+                '換貨商品需保持原包裝完整',
+                '換貨運費由消費者負擔'
+              ]
+            },
+            warrantyPolicy: {
+              title: '保固政策',
+              description: '電子煙主機享有保固服務：',
+              items: [
+                '電子煙主機提供3個月保固',
+                '保固期內非人為損壞可免費維修',
+                '保固不包含配件及煙彈',
+                '保固期間需出示購買憑證'
+              ]
+            },
+            contactInfo: {
+              title: '聯絡資訊',
+              description: '如有任何問題，歡迎聯絡我們：',
+              email: 'service@hazo.com.tw',
+              phone: '02-1234-5678',
+              hours: '週一至週五 9:00-18:00'
+            }
+          }),
+          is_active: 1
+        }
+      ];
+      
+      for (const pageContent of defaultPageContents) {
+        await dbAsync.run(
+          `INSERT INTO page_contents (page_key, page_name, title, subtitle, content, is_active) 
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [pageContent.page_key, pageContent.page_name, pageContent.title, 
+           pageContent.subtitle, pageContent.content, pageContent.is_active]
+        );
+      }
+      console.log('✅ 默認頁面內容已創建。');
     }
   } catch (err) {
     console.error('❌ 數據庫初始化檢查失敗:', err);

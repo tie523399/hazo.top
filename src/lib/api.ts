@@ -429,4 +429,57 @@ export async function getSettings() {
   }
 }
 
+// 頁面內容管理 API
+export const pageContentsAPI = {
+  // 獲取所有頁面內容（管理員）
+  getAllPageContents: async () => {
+    try {
+      const response = await api.get('/page-contents/admin/all');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '獲取頁面內容失敗');
+    }
+  },
+
+  // 獲取特定頁面內容（公開）
+  getPageContent: async (pageKey: string) => {
+    try {
+      const response = await api.get(`/page-contents/${pageKey}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '獲取頁面內容失敗');
+    }
+  },
+
+  // 創建頁面內容
+  createPageContent: async (contentData: any) => {
+    try {
+      const response = await api.post('/page-contents/admin', contentData);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '創建頁面內容失敗');
+    }
+  },
+
+  // 更新頁面內容
+  updatePageContent: async (id: number, contentData: any) => {
+    try {
+      const response = await api.put(`/page-contents/admin/${id}`, contentData);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '更新頁面內容失敗');
+    }
+  },
+
+  // 刪除頁面內容
+  deletePageContent: async (id: number) => {
+    try {
+      const response = await api.delete(`/page-contents/admin/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || '刪除頁面內容失敗');
+    }
+  }
+};
+
 export default api;

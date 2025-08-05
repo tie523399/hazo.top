@@ -18,6 +18,7 @@ const sitemapRouter = require('./routes/sitemap');
 const categoriesRouter = require('./routes/categories');
 const homepageRouter = require('./routes/homepage');
 const cvsRouter = require('./routes/cvs');
+const pageContentsRouter = require('./routes/page-contents');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -85,6 +86,7 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/homepage', homepageRouter);
 app.use('/api/cvs', cvsRouter);
+app.use('/api/page-contents', pageContentsRouter);
 app.use('/api', sitemapRouter);
 
 // 靜態文件服務 - 在API路由之後
