@@ -36,6 +36,12 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
 }) => {
   const { toast } = useToast();
   
+  // 調試日誌
+  console.log('🔍 PageContentManagement 渲染:', {
+    pageContentsLength: pageContents?.length,
+    pageContents: pageContents
+  });
+  
   // 表單狀態
   const [editingContent, setEditingContent] = useState<PageContent | null>(null);
   const [contentForm, setContentForm] = useState<Partial<PageContent>>({
@@ -261,41 +267,49 @@ const PageContentManagement: React.FC<PageContentManagementProps> = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {pageContents.map((content) => (
-                    <TableRow key={content.id}>
-                      <TableCell className="font-medium">
-                        {content.page_name}
-                      </TableCell>
-                      <TableCell>
-                        <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                          {content.page_key}
-                        </code>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={content.is_active ? "default" : "secondary"}>
-                          {content.is_active ? '啟用' : '停用'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-600">
-                        {new Date(content.updated_at).toLocaleString('zh-TW')}
-                      </TableCell>
-                      <TableCell className="space-x-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleEditContent(content)}
-                        >
-                          <Pencil size={16} />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteContent(content.id, content.page_name)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
+                  {pageContents.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                        暫無頁面內容，請新增頁面內容
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    pageContents.map((content) => (
+                      <TableRow key={content.id}>
+                        <TableCell className="font-medium">
+                          {content.page_name}
+                        </TableCell>
+                        <TableCell>
+                          <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                            {content.page_key}
+                          </code>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={content.is_active ? "default" : "secondary"}>
+                            {content.is_active ? '啟用' : '停用'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600">
+                          {new Date(content.updated_at).toLocaleString('zh-TW')}
+                        </TableCell>
+                        <TableCell className="space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleEditContent(content)}
+                          >
+                            <Pencil size={16} />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteContent(content.id, content.page_name)}
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </div>

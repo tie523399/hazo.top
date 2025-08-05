@@ -197,7 +197,10 @@ const AdminPage: React.FC = () => {
       );
       setCategories(Array.isArray(cats?.data) ? cats.data : []);
       setHomepageSettings(Array.isArray(homes?.data) ? homes.data : []);
-      setPageContents(Array.isArray(pageContentList?.data) ? pageContentList.data : Array.isArray(pageContentList) ? pageContentList : []);
+      console.log('🔍 PageContentList 原始數據:', pageContentList);
+      const finalPageContents = Array.isArray(pageContentList?.data) ? pageContentList.data : Array.isArray(pageContentList) ? pageContentList : [];
+      console.log('🔍 PageContents 最終數據:', finalPageContents);
+      setPageContents(finalPageContents);
     } catch (err: any) {
       console.error('載入資料失敗:', err);
       if (err.response?.status === 401) { 
