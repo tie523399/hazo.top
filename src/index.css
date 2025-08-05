@@ -1,0 +1,751 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+    
+    /* Typography Scale */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+    
+    /* Spacing Scale */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 海洋主題配色方案 */
+    /* 主色調 (60%使用比例) */
+    --ocean-deep-blue: #1E3A8A;      /* 深海藍 - 穩重、專業 */
+    --ocean-sea-blue: #4B9CD3;       /* 海水藍 - 明亮、清新 */
+    
+    /* 輔助色 (30%使用比例) */
+    --ocean-coral-orange: #FF6F61;   /* 珊瑚橙 - 溫暖、活潑 */
+    --ocean-sea-green: #2EC4B6;      /* 海沫綠 - 清新自然 */
+    
+    /* 點綴色 (10%使用比例) */
+    --ocean-pearl-white: #F5F6F5;    /* 珍珠白 - 高對比度 */
+    --ocean-sand-gold: #F4A261;      /* 沙灘金 - 溫暖感 */
+    
+    /* 漸層色 */
+    --ocean-gradient-primary: linear-gradient(135deg, var(--ocean-sea-blue) 0%, var(--ocean-sea-green) 100%);
+    --ocean-gradient-secondary: linear-gradient(135deg, var(--ocean-deep-blue) 0%, var(--ocean-sea-blue) 100%);
+    --ocean-gradient-accent: linear-gradient(135deg, var(--ocean-coral-orange) 0%, var(--ocean-sand-gold) 100%);
+    
+    /* 基礎配色 */
+    --background: var(--ocean-pearl-white);
+    --foreground: var(--ocean-deep-blue);
+    --primary: var(--ocean-sea-blue);
+    --primary-foreground: var(--ocean-pearl-white);
+    --secondary: var(--ocean-sea-green);
+    --secondary-foreground: var(--ocean-deep-blue);
+    --accent: var(--ocean-coral-orange);
+    --accent-foreground: var(--ocean-pearl-white);
+    --muted: #E5F3FF;
+    --muted-foreground: #64748B;
+    --border: #CBD5E1;
+    --input: var(--ocean-pearl-white);
+    --ring: var(--ocean-sea-blue);
+    --card: var(--ocean-pearl-white);
+    --card-foreground: var(--ocean-deep-blue);
+    --popover: var(--ocean-pearl-white);
+    --popover-foreground: var(--ocean-deep-blue);
+    
+    /* Sidebar配色 */
+    --sidebar-background: var(--ocean-pearl-white);
+    --sidebar-foreground: var(--ocean-deep-blue);
+    --sidebar-primary: var(--ocean-sea-blue);
+    --sidebar-primary-foreground: var(--ocean-pearl-white);
+    --sidebar-accent: #E5F3FF;
+    --sidebar-accent-foreground: var(--ocean-deep-blue);
+    --sidebar-border: #CBD5E1;
+    --sidebar-ring: var(--ocean-sea-blue);
+  }
+
+  .dark {
+    --background: var(--ocean-deep-blue);
+    --foreground: var(--ocean-pearl-white);
+    --primary: var(--ocean-sea-blue);
+    --primary-foreground: var(--ocean-deep-blue);
+    --secondary: var(--ocean-sea-green);
+    --secondary-foreground: var(--ocean-pearl-white);
+    --accent: var(--ocean-coral-orange);
+    --accent-foreground: var(--ocean-pearl-white);
+    --muted: #334155;
+    --muted-foreground: #94A3B8;
+    --border: #475569;
+    --input: #334155;
+    --ring: var(--ocean-sea-blue);
+    --card: #1E293B;
+    --card-foreground: var(--ocean-pearl-white);
+    --popover: #1E293B;
+    --popover-foreground: var(--ocean-pearl-white);
+    
+    --sidebar-background: var(--ocean-deep-blue);
+    --sidebar-foreground: var(--ocean-pearl-white);
+    --sidebar-primary: var(--ocean-sea-blue);
+    --sidebar-primary-foreground: var(--ocean-pearl-white);
+    --sidebar-accent: #334155;
+    --sidebar-accent-foreground: var(--ocean-pearl-white);
+    --sidebar-border: #475569;
+    --sidebar-ring: var(--ocean-sea-blue);
+  }
+  
+  * {
+    border-color: hsl(var(--border));
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+@layer utilities {
+  /* Text Balance */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* User Select 修復 */
+  .select-none {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  .select-text {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+  
+  .select-all {
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+  }
+  
+  /* Glass Morphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: var(--ocean-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Animated Gradient Background */
+  .animated-gradient {
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+    will-change: background-position;
+  }
+  
+  @keyframes gradient-shift {
+    0% { 
+      background-position: 0% 50%; 
+      transform: translateZ(0); /* 觸發硬體加速 */
+    }
+    50% { 
+      background-position: 100% 50%; 
+      transform: translateZ(0);
+    }
+    100% { 
+      background-position: 0% 50%; 
+      transform: translateZ(0);
+    }
+  }
+  
+  /* Hover Scale */
+  .hover-scale {
+    transition: transform var(--transition-base);
+    will-change: transform;
+  }
+  
+  .hover-scale:hover {
+    transform: scale3d(1.02, 1.02, 1); /* 使用3D變換以觸發硬體加速 */
+  }
+  
+  /* Hover Lift */
+  .hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    will-change: transform, box-shadow;
+  }
+  
+  .hover-lift:hover {
+    transform: translate3d(0, -4px, 0); /* 使用3D變換 */
+    box-shadow: var(--shadow-xl);
+  }
+  
+  /* Focus Styles */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary;
+  }
+}
+
+/* Enhanced Ocean Theme Components */
+
+/* Premium Button Styles */
+.ocean-button {
+  position: relative;
+  padding: 0.75rem 2rem;
+  background: var(--ocean-gradient-secondary);
+  color: var(--ocean-pearl-white);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.ocean-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left var(--transition-slower);
+}
+
+.ocean-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.ocean-button:hover::before {
+  left: 100%;
+}
+
+.ocean-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2),
+              inset 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Premium Secondary Button */
+.ocean-button-secondary {
+  position: relative;
+  padding: 0.75rem 2rem;
+  background: transparent;
+  color: var(--ocean-sea-blue);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius);
+  border: 2px solid currentColor;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 8px rgba(75, 156, 211, 0.15);
+}
+
+.ocean-button-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: var(--ocean-sea-blue);
+  transition: width var(--transition-base);
+  z-index: -1;
+}
+
+.ocean-button-secondary:hover {
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(75, 156, 211, 0.25);
+}
+
+.ocean-button-secondary:hover::before {
+  width: 100%;
+}
+
+/* Premium Accent Button */
+.ocean-button-accent {
+  position: relative;
+  padding: 0.75rem 2rem;
+  background: var(--ocean-gradient-accent);
+  color: white;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: perspective(1000px) rotateX(0deg);
+}
+
+.ocean-button-accent:hover {
+  transform: perspective(1000px) rotateX(-10deg) translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.ocean-button-accent:active {
+  transform: perspective(1000px) rotateX(-5deg) translateY(0);
+}
+
+/* Enhanced Typography */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--font-size-5xl); }
+h2 { font-size: var(--font-size-4xl); }
+h3 { font-size: var(--font-size-3xl); }
+h4 { font-size: var(--font-size-2xl); }
+h5 { font-size: var(--font-size-xl); }
+h6 { font-size: var(--font-size-lg); }
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection Styles */
+::selection {
+  background: var(--ocean-sea-blue);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--ocean-sea-blue);
+  color: white;
+}
+
+/* Improved Focus States */
+:focus-visible {
+  outline: 2px solid var(--ocean-sea-blue);
+  outline-offset: 2px;
+}
+
+/* Enhanced Image Handling */
+img {
+  object-position: top;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Premium Card Styles */
+.ocean-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius);
+  border: 1px solid rgba(75, 156, 211, 0.1);
+  box-shadow: 0 4px 24px rgba(30, 58, 138, 0.08),
+              0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+.ocean-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--ocean-gradient-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.ocean-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(30, 58, 138, 0.12),
+              0 2px 4px rgba(0, 0, 0, 0.05);
+  border-color: rgba(75, 156, 211, 0.2);
+}
+
+/* ==================== 按鈕和 CTA 移動端優化樣式 ==================== */
+/* 主要 CTA 按鈕 */
+.ocean-cta-primary {
+  @apply inline-flex items-center justify-center gap-2
+         min-h-[48px] px-6 py-3 
+         text-base font-medium tracking-wide
+         bg-gradient-to-r from-blue-600 to-cyan-600 
+         text-white rounded-xl
+         hover:scale-105 active:scale-95
+         transition-all duration-200
+         shadow-lg hover:shadow-xl
+         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+/* 次要按鈕 */
+.ocean-cta-secondary {
+  @apply inline-flex items-center justify-center gap-2
+         min-h-[44px] px-5 py-3 
+         text-base font-medium tracking-wide
+         bg-white/90 backdrop-blur-sm 
+         text-blue-600 rounded-xl
+         border-2 border-blue-200
+         hover:bg-blue-50 active:bg-blue-100
+         transition-all duration-200
+         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+}
+
+/* 海洋主題按鈕基礎樣式 */
+.ocean-button-primary {
+  @apply inline-flex items-center justify-center gap-2
+         min-h-[44px] px-5 py-3
+         text-base font-medium tracking-wide
+         bg-gradient-to-r from-blue-600 to-cyan-600
+         text-white rounded-xl
+         shadow-md hover:shadow-lg
+         transform hover:-translate-y-0.5 active:translate-y-0
+         transition-all duration-200;
+  touch-action: manipulation;
+}
+
+.ocean-button-secondary {
+  @apply inline-flex items-center justify-center gap-2
+         min-h-[44px] px-5 py-3
+         text-base font-medium tracking-wide
+         bg-white text-blue-600
+         border-2 border-blue-200
+         rounded-xl
+         hover:bg-blue-50 hover:border-blue-300
+         active:bg-blue-100
+         transition-all duration-200;
+  touch-action: manipulation;
+}
+
+/* 小型按鈕 */
+.ocean-button-sm {
+  @apply min-h-[40px] px-4 py-2.5 text-sm;
+}
+
+/* 大型按鈕 */
+.ocean-button-lg {
+  @apply min-h-[48px] px-6 py-3.5 text-lg;
+}
+
+/* 移動端特定優化 */
+@media (max-width: 768px) {
+  .ocean-cta-primary,
+  .ocean-cta-secondary,
+  .ocean-button-primary,
+  .ocean-button-secondary {
+    @apply min-h-[48px] text-base px-6 py-3.5;
+    font-size: 16px !important; /* 確保在移動端不會縮小 */
+  }
+  
+  /* 移動端按鈕組間距 */
+  .ocean-button-group {
+    @apply flex flex-col gap-3 w-full;
+  }
+  
+  .ocean-button-group > * {
+    @apply w-full;
+  }
+}
+
+/* 按鈕點擊效果 */
+.ocean-button-primary:active,
+.ocean-button-secondary:active,
+.ocean-cta-primary:active,
+.ocean-cta-secondary:active {
+  transform: scale(0.98);
+}
+
+/* 禁用狀態 */
+.ocean-button-primary:disabled,
+.ocean-button-secondary:disabled,
+.ocean-cta-primary:disabled,
+.ocean-cta-secondary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+  transform: none !important;
+}
+
+.ocean-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Luxury Card Variant */
+.ocean-card-luxury {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(245, 246, 245, 0.9) 100%);
+  border: 1px solid rgba(244, 162, 97, 0.2);
+  box-shadow: 0 8px 32px rgba(244, 162, 97, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.ocean-card-luxury:hover {
+  border-color: rgba(244, 162, 97, 0.4);
+  box-shadow: 0 16px 48px rgba(244, 162, 97, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Premium Navigation */
+.ocean-nav {
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(75, 156, 211, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  z-index: 40;
+}
+
+.ocean-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--ocean-gradient-primary);
+  opacity: 0.5;
+}
+
+/* Premium Footer */
+.ocean-footer {
+  position: relative;
+  background: linear-gradient(135deg, 
+    var(--ocean-deep-blue) 0%, 
+    var(--ocean-sea-blue) 100%);
+  color: var(--ocean-pearl-white);
+  overflow: hidden;
+}
+
+.ocean-footer::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    transparent 70%);
+  animation: pulse 10s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale3d(1, 1, 1); 
+    opacity: 0.5; 
+  }
+  50% { 
+    transform: scale3d(1.1, 1.1, 1); 
+    opacity: 0.3; 
+  }
+}
+
+/* Loading States */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, 
+    #f0f0f0 25%, 
+    #e0e0e0 50%, 
+    #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { 
+    background-position: 200% 0; 
+    transform: translateZ(0); /* 觸發硬體加速 */
+  }
+  100% { 
+    background-position: -200% 0; 
+    transform: translateZ(0);
+  }
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+  transition: all var(--transition-base);
+}
+
+.transition-colors {
+  transition: color var(--transition-fast), 
+              background-color var(--transition-fast), 
+              border-color var(--transition-fast);
+}
+
+.transition-transform {
+  transition: transform var(--transition-base);
+}
+
+/* Animations - 優化版本使用硬體加速 */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translate3d(0, 10px, 0); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slideIn {
+  from { 
+    transform: translate3d(-100%, 0, 0); 
+  }
+  to { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    transform: scale3d(0.9, 0.9, 1); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale3d(1, 1, 1); 
+    opacity: 1; 
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--transition-base) ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-slideIn {
+  animation: slideIn var(--transition-base) ease-out;
+  will-change: transform;
+}
+
+.animate-scaleIn {
+  animation: scaleIn var(--transition-base) ease-out;
+  will-change: transform, opacity;
+}
+
+/* Premium Input Styles */
+input, textarea, select {
+  transition: all var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--ocean-sea-blue);
+  box-shadow: 0 0 0 3px rgba(75, 156, 211, 0.1);
+}
+
+/* Premium Badge */
+.ocean-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: 9999px;
+  background: var(--ocean-gradient-accent);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 111, 97, 0.25);
+}
+
+/* Hover Effects */
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(75, 156, 211, 0.4);
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg) scale(1.05);
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 0.875rem;
+  }
+  
+  h1 { font-size: var(--font-size-3xl); }
+  h2 { font-size: var(--font-size-2xl); }
+  h3 { font-size: var(--font-size-xl); }
+}
