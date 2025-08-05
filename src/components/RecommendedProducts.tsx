@@ -153,7 +153,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({
       <div className="relative">
         <Link to={`/products/${product.id}`}>
           <img
-            src={product.image_url || '/images/placeholder.jpg'}
+                            src={product.image_url || '/images/whale-logo.png'}
             alt={product.name}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />

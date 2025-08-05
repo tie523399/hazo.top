@@ -347,7 +347,7 @@ const Cart: React.FC = () => {
                       <Link to={`/products/${item.product_id}`}>
                         <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-gray-100 shadow-sm flex-shrink-0">
                     <img
-                            src={item.image_url || '/images/placeholder.jpg'}
+                            src={item.image_url || '/images/whale-logo.png'}
                       alt={item.name}
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />

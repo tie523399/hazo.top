@@ -245,7 +245,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         alt={img.name}
                         className="w-12 h-12 object-cover rounded-md border"
                         onError={(e) => {
-                          e.currentTarget.src = '/images/placeholder.png';
+                          e.currentTarget.src = '/images/whale-logo.png';
                         }}
                       />
                     </div>

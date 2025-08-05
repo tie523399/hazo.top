@@ -313,7 +313,7 @@ const ProductImageManager: React.FC<{
                 className="w-full h-32 object-cover"
                 onError={(e) => {
                   console.error('圖片載入失敗:', image.image_url);
-                  e.currentTarget.src = '/images/placeholder.jpg';
+                  e.currentTarget.src = '/images/whale-logo.png';
                 }}
               />
 

@@ -28,7 +28,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   // 如果沒有圖片，使用預設圖片
   const displayImages = images.length > 0 ? images : [
-    { id: 0, image_url: '/images/placeholder.jpg', alt_text: productName }
+    { id: 0, image_url: '/images/whale-logo.png', alt_text: productName }
   ];
 
   const nextImage = () => {
@@ -45,9 +45,9 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   const getImageSrc = (image: ProductImage) => {
     if (imageErrors.has(image.id)) {
-      return '/images/placeholder.jpg';
+      return '/images/whale-logo.png';
     }
-    return image.image_url || '/images/placeholder.jpg';
+    return image.image_url || '/images/whale-logo.png';
   };
 
   // 觸控滑動處理
