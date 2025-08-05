@@ -182,6 +182,51 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const config = getCategoryConfig(product.category, product.category_name);
 
+  // 智能圖片URL處理
+  const getProductImageUrl = (product: Product) => {
+    // 如果有明確的圖片URL且不為空
+    if (product.image_url && product.image_url.trim() !== '') {
+      return product.image_url;
+    }
+    
+    // 根據分類智能選擇預設圖片
+    return getDefaultImageUrl(product);
+  };
+
+  const getDefaultImageUrl = (product: Product) => {
+    const category = product.category?.toLowerCase() || '';
+    const categoryName = product.category_name?.toLowerCase() || '';
+    const productName = product.name?.toLowerCase() || '';
+    
+    // 海洋系列使用海洋標誌
+    if (category.includes('ocean') || categoryName.includes('海洋') || productName.includes('ocean')) {
+      return '/images/ocean-logo.gif';
+    }
+    
+    // 鯨魚系列使用鯨魚標誌
+    if (category.includes('whale') || categoryName.includes('鯨魚') || productName.includes('whale')) {
+      return '/images/whale-logo.gif';
+    }
+    
+    // 主機類產品
+    if (category.includes('host') || categoryName.includes('主機') || productName.includes('主機')) {
+      return '/images/sp2_device_main_showcase.jpg';
+    }
+    
+    // 煙彈類產品
+    if (category.includes('cartridge') || categoryName.includes('煙彈') || productName.includes('煙彈')) {
+      return '/images/sp2_pods_main.webp';
+    }
+    
+    // 海量國際品牌預設使用海洋標誌
+    if (product.brand?.includes('海量') || productName.includes('海量')) {
+      return '/images/ocean-logo.gif';
+    }
+    
+    // 通用預設圖片
+    return '/images/placeholder.jpg';
+  };
+
   return (
     <div className="group relative">
       {/* 按鈕樣式 */}
@@ -203,7 +248,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               
               {/* Product Image */}
               <img
-                src={product.image_url || '/images/placeholder.jpg'}
+                src={getProductImageUrl(product)}
                 alt={product.name}
                 className={cn(
                   "h-full w-full object-cover transition-all duration-700",
@@ -212,7 +257,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 )}
                 onLoad={() => setImageLoaded(true)}
                 onError={(e) => {
-                  e.currentTarget.src = '/images/placeholder.jpg';
+                  e.currentTarget.src = getDefaultImageUrl(product);
                   setImageLoaded(true);
                 }}
                 loading="lazy"
