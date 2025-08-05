@@ -237,20 +237,13 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
       await forceAdminReset();
     }
 
-    // 檢查產品數據是否存在
+    // 檢查產品數據狀態（僅顯示信息，不自動恢復）
     const { dbAsync } = require('./database/db');
     const row = await dbAsync.get('SELECT COUNT(*) as count FROM products');
     if (row.count === 0) {
-      console.log('📦 檢測到空的產品表，正在恢復產品數據...');
-      try {
-        // 執行產品數據恢復
-        const restoreProducts = require('./scripts/restore-products');
-        await restoreProducts();
-        console.log('✅ 產品數據恢復完成');
-      } catch (restoreErr) {
-        console.error('❌ 產品數據恢復失敗:', restoreErr);
-        console.log('⚠️ 請手動執行: node src/scripts/restore-products.js');
-      }
+      console.log('📦 產品表為空 - 請通過管理員後台添加商品');
+      console.log('🎯 管理員網址: /admin');
+      console.log('👤 預設帳號: admin / admin123');
     } else {
       console.log(`✅ 產品數據已存在 (${row.count} 個產品)`);
     }
