@@ -18,6 +18,7 @@ interface Category {
   description?: string;
   display_order: number;
   is_active: boolean;
+  image_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -39,19 +40,48 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
     is_active: true,
     display_order: 0
   });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+
+  // 處理圖片選擇
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      
+      // 創建預覽
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 重置表單
+  const resetForm = () => {
+    setEditingCategory(null);
+    setCategoryForm({ is_active: true, display_order: 0 });
+    setSelectedImage(null);
+    setImagePreview('');
+  };
 
   // 分類CRUD操作
   const handleCreateOrUpdateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const formData = {
+        ...categoryForm,
+        ...(selectedImage && { image: selectedImage })
+      };
+
       if (editingCategory) {
-        await categoriesAPI.updateCategory(editingCategory.id, categoryForm);
+        await categoriesAPI.updateCategory(editingCategory.id, formData);
       } else {
-        await categoriesAPI.createCategory(categoryForm as any);
+        await categoriesAPI.createCategory(formData as any);
       }
       toast({ title: `分類已${editingCategory ? '更新' : '新增'}` });
-      setEditingCategory(null);
-      setCategoryForm({ is_active: true, display_order: 0 });
+      resetForm();
       onFetchData();
     } catch (error: any) {
       toast({ title: '操作失敗', description: error.message, variant: 'destructive' });
@@ -120,6 +150,33 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 />
               </div>
               
+              <div>
+                <Label>分類圖片</Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="cursor-pointer"
+                />
+                
+                {/* 圖片預覽 */}
+                {(imagePreview || (editingCategory?.image_url && !selectedImage)) && (
+                  <div className="mt-2">
+                    <img
+                      src={imagePreview || editingCategory?.image_url}
+                      alt="分類圖片預覽"
+                      className="w-20 h-20 object-cover rounded-md border"
+                    />
+                    {!imagePreview && editingCategory?.image_url && (
+                      <p className="text-sm text-gray-500 mt-1">當前圖片</p>
+                    )}
+                    {imagePreview && (
+                      <p className="text-sm text-green-600 mt-1">新選擇的圖片</p>
+                    )}
+                  </div>
+                )}
+              </div>
+              
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={categoryForm.is_active !== false}
@@ -139,10 +196,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => {
-                    setEditingCategory(null);
-                    setCategoryForm({ is_active: true, display_order: 0 });
-                  }}
+                  onClick={resetForm}
                 >
                   取消編輯
                 </Button>
@@ -163,6 +217,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>圖片</TableHead>
                     <TableHead>名稱</TableHead>
                     <TableHead>標識符</TableHead>
                     <TableHead>描述</TableHead>
@@ -174,6 +229,19 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                 <TableBody>
                   {(Array.isArray(categories) ? categories : []).map(category => (
                     <TableRow key={category.id}>
+                      <TableCell>
+                        {category.image_url ? (
+                          <img
+                            src={category.image_url}
+                            alt={category.name}
+                            className="w-12 h-12 object-cover rounded-md border"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-md border flex items-center justify-center">
+                            <span className="text-gray-400 text-xs">無圖</span>
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell>{category.name}</TableCell>
                       <TableCell>{category.slug}</TableCell>
                       <TableCell>{category.description || '-'}</TableCell>
@@ -189,6 +257,8 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
                           onClick={() => {
                             setEditingCategory(category);
                             setCategoryForm(category);
+                            setImagePreview('');
+                            setSelectedImage(null);
                           }}
                         >
                           <Pencil size={16} />

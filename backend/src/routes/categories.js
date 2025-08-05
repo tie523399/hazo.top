@@ -1,6 +1,54 @@
 const express = require('express');
 const router = express.Router();
 const { dbAsync } = require('../database/db');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// 確保上傳目錄存在
+const uploadDir = path.join(__dirname, '../../dist/images/categories');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// 配置圖片上傳
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // 根據環境選擇目錄
+    const uploadPath = process.env.NODE_ENV === 'production' 
+      ? path.join(__dirname, '../../dist/images/categories')
+      : path.join(__dirname, '../../../public/images/categories');
+    
+    // 確保目錄存在
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    // 生成唯一檔名
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'category-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimeType = allowedTypes.test(file.mimetype);
+
+    if (mimeType && extName) {
+      return cb(null, true);
+    } else {
+      cb(new Error('只允許上傳圖片文件 (JPEG, PNG, GIF, WebP)'));
+    }
+  }
+});
 
 // 簡單的認證中間件（暫時用於categories路由）
 const authenticateToken = (req, res, next) => {
@@ -53,7 +101,7 @@ router.get('/all', authenticateToken, async (req, res) => {
 });
 
 // 創建新分類
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   const { name, slug, description, display_order = 0, is_active = true } = req.body;
   
   if (!name || !slug) {
@@ -67,10 +115,16 @@ router.post('/', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: '分類名稱或標識符已存在' });
     }
     
+    // 處理圖片路徑
+    let image_url = null;
+    if (req.file) {
+      image_url = `/images/categories/${req.file.filename}`;
+    }
+    
     const result = await dbAsync.run(
-      `INSERT INTO categories (name, slug, description, display_order, is_active) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [name, slug, description, display_order, is_active ? 1 : 0]
+      `INSERT INTO categories (name, slug, description, display_order, is_active, image_url) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, slug, description, display_order, is_active ? 1 : 0, image_url]
     );
     
     const newCategory = await dbAsync.get('SELECT * FROM categories WHERE id = ?', result.lastID);
@@ -82,7 +136,7 @@ router.post('/', authenticateToken, async (req, res) => {
 });
 
 // 更新分類
-router.put('/:id', authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const { name, slug, description, display_order, is_active } = req.body;
   
@@ -103,9 +157,25 @@ router.put('/:id', authenticateToken, async (req, res) => {
       }
     }
     
+    // 處理圖片更新
+    let image_url = category.image_url; // 保持原有圖片
+    if (req.file) {
+      // 如果有新圖片，刪除舊圖片文件
+      if (category.image_url) {
+        const oldImagePath = process.env.NODE_ENV === 'production' 
+          ? path.join(__dirname, '../../dist', category.image_url)
+          : path.join(__dirname, '../../../public', category.image_url);
+        
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      image_url = `/images/categories/${req.file.filename}`;
+    }
+    
     await dbAsync.run(
       `UPDATE categories 
-       SET name = ?, slug = ?, description = ?, display_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+       SET name = ?, slug = ?, description = ?, display_order = ?, is_active = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
       [
         name || category.name,
@@ -113,6 +183,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         description !== undefined ? description : category.description,
         display_order !== undefined ? display_order : category.display_order,
         is_active !== undefined ? (is_active ? 1 : 0) : category.is_active,
+        image_url,
         id
       ]
     );
@@ -142,10 +213,25 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       });
     }
     
+    // 獲取分類信息以刪除相關圖片
+    const category = await dbAsync.get('SELECT * FROM categories WHERE id = ?', id);
+    
+    if (!category) {
+      return res.status(404).json({ error: '分類不存在' });
+    }
+    
+    // 刪除分類記錄
     const result = await dbAsync.run('DELETE FROM categories WHERE id = ?', id);
     
-    if (result.changes === 0) {
-      return res.status(404).json({ error: '分類不存在' });
+    // 刪除相關圖片文件
+    if (category.image_url) {
+      const imagePath = process.env.NODE_ENV === 'production' 
+        ? path.join(__dirname, '../../dist', category.image_url)
+        : path.join(__dirname, '../../../public', category.image_url);
+      
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
     
     res.json({ success: true, message: '分類已刪除' });
