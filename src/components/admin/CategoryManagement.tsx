@@ -50,17 +50,39 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({
   // 分類CRUD操作
   const handleCreateOrUpdateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // 驗證必填欄位
+    if (!categoryForm.name?.trim()) {
+      toast({ title: '操作失敗', description: '分類名稱為必填', variant: 'destructive' });
+      return;
+    }
+    
+    if (!categoryForm.slug?.trim()) {
+      toast({ title: '操作失敗', description: '標識符為必填', variant: 'destructive' });
+      return;
+    }
+    
     try {
       if (editingCategory) {
         await categoriesAPI.updateCategory(editingCategory.id, categoryForm);
       } else {
-        await categoriesAPI.createCategory(categoryForm as any);
+        // 確保傳送完整且正確的資料
+        const categoryData = {
+          name: categoryForm.name.trim(),
+          slug: categoryForm.slug.trim(),
+          description: categoryForm.description?.trim() || '',
+          display_order: categoryForm.display_order || 0,
+          is_active: categoryForm.is_active !== false // 預設為 true
+        };
+        await categoriesAPI.createCategory(categoryData);
       }
       toast({ title: `分類已${editingCategory ? '更新' : '新增'}` });
       resetForm();
       onFetchData();
     } catch (error: any) {
-      toast({ title: '操作失敗', description: error.message, variant: 'destructive' });
+      console.error('分類操作錯誤:', error);
+      const errorMessage = error.response?.data?.error || error.message || '操作失敗';
+      toast({ title: '操作失敗', description: errorMessage, variant: 'destructive' });
     }
   };
 
