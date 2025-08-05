@@ -395,9 +395,13 @@ router.post('/products', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: '缺少必要參數' });
     }
     
-    const validCategories = ['host', 'cartridge', 'disposable'];
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ error: '產品類別無效' });
+    // 動態驗證分類是否存在於數據庫中
+    const categoryExists = await dbAsync.get(
+      'SELECT id FROM categories WHERE slug = ? AND is_active = 1',
+      [category]
+    );
+    if (!categoryExists) {
+      return res.status(400).json({ error: '指定的產品類別不存在或已停用' });
     }
     
     const result = await dbAsync.run(`
@@ -425,9 +429,13 @@ router.put('/products/:id', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: '缺少必要參數' });
     }
     
-    const validCategories = ['host', 'cartridge', 'disposable'];
-    if (!validCategories.includes(category)) {
-      return res.status(400).json({ error: '產品類別無效' });
+    // 動態驗證分類是否存在於數據庫中
+    const categoryExists = await dbAsync.get(
+      'SELECT id FROM categories WHERE slug = ? AND is_active = 1',
+      [category]
+    );
+    if (!categoryExists) {
+      return res.status(400).json({ error: '指定的產品類別不存在或已停用' });
     }
     
     const result = await dbAsync.run(`
