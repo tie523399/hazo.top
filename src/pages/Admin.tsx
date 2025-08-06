@@ -24,7 +24,8 @@ import {
   Tag,
   Globe,
   Users,
-  Megaphone
+  Megaphone,
+  HardDrive
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { adminAPI, categoriesAPI, homepageAPI, pageContentsAPI, getDashboardStats, getImages } from "@/lib/api";
@@ -50,6 +51,7 @@ import FooterManagement from '@/components/admin/FooterManagement';
 import SystemSettings from '@/components/admin/SystemSettings';
 import UserManagement from '@/components/admin/UserManagement';
 import PageContentManagement from '@/components/admin/PageContentManagement';
+import BackupManagement from '@/components/admin/BackupManagement';
 
 // --- Type Definitions ---
 interface DashboardStats { 
@@ -470,6 +472,10 @@ const AdminPage: React.FC = () => {
                 <Settings className="mr-2 h-4 w-4" />
                 系統設置
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('backup')}>
+                <HardDrive className="mr-2 h-4 w-4" />
+                數據備份
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setActiveTab('admins')}>
                 <Users className="mr-2 h-4 w-4" />
                 管理員
@@ -491,6 +497,7 @@ const AdminPage: React.FC = () => {
             {activeTab === 'announcements' && '📢 公告管理'}
             {activeTab === 'settings' && '⚙️ 系統設置'}
             {activeTab === 'page-contents' && '📄 頁面內容管理'}
+            {activeTab === 'backup' && '💾 數據備份管理'}
             {activeTab === 'admins' && '👥 管理員管理'}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -504,6 +511,7 @@ const AdminPage: React.FC = () => {
             {activeTab === 'announcements' && '發布網站公告和重要通知信息'}
             {activeTab === 'settings' && '配置系統參數、支付設置和網站基本信息'}
             {activeTab === 'page-contents' && '管理靜態頁面內容，如關於我們、服務條款等'}
+            {activeTab === 'backup' && '創建數據備份、恢復歷史數據，確保系統資料安全'}
             {activeTab === 'admins' && '管理後台用戶權限和帳號設置'}
           </p>
         </div>
@@ -597,6 +605,10 @@ const AdminPage: React.FC = () => {
             pageContents={pageContents}
             onFetchData={fetchAllData}
           />
+        </TabsContent>
+        
+        <TabsContent value="backup" className="mt-6">
+          <BackupManagement />
         </TabsContent>
         
         <TabsContent value="admins" className="mt-6">

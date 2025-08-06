@@ -6,6 +6,9 @@ require('dotenv').config();
 // 導入數據庫
 const { testConnection } = require('./database/db');
 
+// 導入備份系統
+const { startAutoBackup, createBackup, getDatabaseStats } = require('./scripts/backup-system');
+
 // 導入路由
 const productsRouter = require('./routes/products');
 const cartRouter = require('./routes/cart');
@@ -292,6 +295,25 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
   // 測試數據庫連接
   await testConnection();
+  
+  // 啟動數據備份系統
+  console.log('🔄 啟動數據備份系統...');
+  try {
+    // 立即創建一次備份
+    await createBackup();
+    
+    // 顯示數據庫統計信息
+    await getDatabaseStats();
+    
+    // 啟動自動備份（每6小時一次）
+    const backupInterval = process.env.BACKUP_INTERVAL_HOURS || 6;
+    startAutoBackup(parseInt(backupInterval));
+    
+    console.log(`✅ 數據備份系統已啟動，備份間隔: ${backupInterval} 小時`);
+  } catch (error) {
+    console.error('❌ 備份系統啟動失敗:', error.message);
+    console.log('⚠️ 服務器將繼續運行，但自動備份功能不可用');
+  }
 });
 
 module.exports = app;

@@ -7,6 +7,15 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
+// 導入備份系統
+const { 
+  createBackup, 
+  listBackups, 
+  restoreFromBackup, 
+  checkDatabaseIntegrity, 
+  getDatabaseStats 
+} = require('../scripts/backup-system');
+
 const JWT_SECRET = process.env.JWT_SECRET || 'vape-store-secret-key';
 
 // 圖片上傳目錄 - 根據環境選擇正確路徑
@@ -1225,6 +1234,99 @@ router.put('/products/:id/images/reorder', authenticateToken, async (req, res) =
   } catch (error) {
     console.error('更新圖片順序失敗:', error);
     res.status(500).json({ error: '更新圖片順序失敗' });
+  }
+});
+
+// ==== 數據備份管理 API ====
+
+// 創建備份
+router.post('/backup/create', authenticateToken, async (req, res) => {
+  try {
+    console.log('🔄 管理員請求創建數據備份...');
+    const backupPath = await createBackup();
+    
+    if (backupPath) {
+      res.json({ 
+        success: true, 
+        message: '數據備份創建成功',
+        backupPath: path.basename(backupPath)
+      });
+    } else {
+      res.status(500).json({ error: '數據備份創建失敗' });
+    }
+  } catch (error) {
+    console.error('創建備份失敗:', error);
+    res.status(500).json({ error: '創建備份失敗: ' + error.message });
+  }
+});
+
+// 列出所有備份
+router.get('/backup/list', authenticateToken, async (req, res) => {
+  try {
+    const backups = listBackups();
+    res.json({ 
+      success: true, 
+      backups: backups 
+    });
+  } catch (error) {
+    console.error('列出備份失敗:', error);
+    res.status(500).json({ error: '列出備份失敗: ' + error.message });
+  }
+});
+
+// 恢復備份
+router.post('/backup/restore', authenticateToken, async (req, res) => {
+  try {
+    const { backupFileName } = req.body;
+    
+    if (!backupFileName) {
+      return res.status(400).json({ error: '請指定備份文件名' });
+    }
+    
+    console.log(`🔄 管理員請求恢復備份: ${backupFileName}`);
+    const success = await restoreFromBackup(backupFileName);
+    
+    if (success) {
+      res.json({ 
+        success: true, 
+        message: '數據恢復成功，請重新啟動應用程序',
+        warning: '建議立即重啟服務器以確保數據一致性'
+      });
+    } else {
+      res.status(500).json({ error: '數據恢復失敗' });
+    }
+  } catch (error) {
+    console.error('恢復備份失敗:', error);
+    res.status(500).json({ error: '恢復備份失敗: ' + error.message });
+  }
+});
+
+// 檢查數據庫完整性
+router.get('/backup/check-integrity', authenticateToken, async (req, res) => {
+  try {
+    const isValid = await checkDatabaseIntegrity();
+    res.json({ 
+      success: true, 
+      isValid: isValid,
+      message: isValid ? '數據庫完整性檢查通過' : '數據庫完整性檢查失敗'
+    });
+  } catch (error) {
+    console.error('完整性檢查失敗:', error);
+    res.status(500).json({ error: '完整性檢查失敗: ' + error.message });
+  }
+});
+
+// 獲取數據庫統計信息
+router.get('/backup/stats', authenticateToken, async (req, res) => {
+  try {
+    const stats = await getDatabaseStats();
+    res.json({ 
+      success: true, 
+      stats: stats 
+    });
+  } catch (error) {
+    console.error('獲取統計信息失敗:', error);
+    res.status(500).json({ error: '獲取統計信息失敗: ' + error.message });
   }
 });
 
