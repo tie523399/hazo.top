@@ -1,5 +1,6 @@
 const { dbAsync } = require('../database/db');
 const bcrypt = require('bcryptjs');
+const initializeDatabase = require('./init-database');
 
 /**
  * 完整的網站數據初始化 - 一次性創建所有動態內容
@@ -8,6 +9,11 @@ async function setupCompleteData() {
   console.log('🚀 開始創建完整網站數據...\n');
   
   try {
+    // 1. 首先初始化數據庫（創建表結構和基本數據）
+    console.log('📋 初始化數據庫...');
+    await initializeDatabase();
+    console.log('✅ 數據庫初始化完成\n');
+
     await dbAsync.run('BEGIN TRANSACTION');
 
     // 1. 創建產品分類
@@ -149,10 +155,12 @@ async function setupCompleteData() {
       }
     }
 
-    // 3. 創建管理員賬戶
-    console.log('\n👤 創建管理員賬戶...');
-    const adminExists = await dbAsync.get('SELECT id FROM admins WHERE username = ?', 'admin');
-    if (!adminExists) {
+    // 3. 檢查管理員賬戶
+    console.log('\n👤 檢查管理員賬戶...');
+    const adminExists = await dbAsync.get('SELECT username FROM admins WHERE username = ?', 'admin');
+    if (adminExists) {
+      console.log('✅ 管理員賬戶已存在: admin / admin123');
+    } else {
       const hashedPassword = await bcrypt.hash('admin123', 10);
       await dbAsync.run(
         'INSERT INTO admins (username, password_hash) VALUES (?, ?)',
