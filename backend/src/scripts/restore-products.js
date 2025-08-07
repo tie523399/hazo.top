@@ -27,7 +27,7 @@ const products = [];
 const exampleProduct = {
   // id: 自動生成,
   // name: '商品名稱',
-  // category: 'host|cartridge|disposable',
+  // category: 'electronics|accessories|lifestyle',
   // brand: '品牌名稱', 
   // price: 價格,
   // description: '商品描述',

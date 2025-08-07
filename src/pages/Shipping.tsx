@@ -36,7 +36,7 @@ const Shipping: React.FC = () => {
             {
               step: 1,
               title: '選擇商品',
-              description: '瀏覽我們精選的電子煙產品，加入購物車',
+              description: '瀏覽我們精選的品牌產品，加入購物車',
               icon: 'ShoppingCart'
             },
             {
@@ -93,9 +93,9 @@ const Shipping: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <SEO
-        title="配送說明 - HAZO 電子煙商城"
-        description="了解 HAZO 電子煙商城的配送流程，簡單三步驟完成購物。支援7-11、全家便利商店取貨，3-5個工作天快速配送。"
-        keywords="配送說明,電子煙配送,便利商店取貨,7-11取貨,全家取貨,電子煙購物流程"
+        title="配送說明 - HAZO國際"
+        description="了解 HAZO國際的配送流程，簡單三步驟完成購物。支援7-11、全家便利商店取貨，3-5個工作天快速配送。"
+        keywords="配送說明,品牌配送,便利商店取貨,7-11取貨,全家取貨,購物流程,HAZO國際"
         url="/shipping"
       />
       <div className="container mx-auto px-4">

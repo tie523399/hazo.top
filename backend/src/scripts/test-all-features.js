@@ -24,7 +24,7 @@ async function testAllFeatures() {
     // 2. 更新頁腳設置
     console.log('\n🦶 測試頁腳設置...');
     await dbRun(`UPDATE footer_settings SET title = ?, content = ?, image_url = ? WHERE section = ?`, 
-      ['海量國際', '海量國際致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。', '/images/ocean-logo.gif', 'company_info']);
+      ['HAZO國際', 'HAZO國際致力於提供最優質的產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。', '/images/ocean-logo.gif', 'company_info']);
     
     await dbRun(`UPDATE footer_settings SET content = ? WHERE section = ?`, 
       ['© 2025卉田國際旗下 子公司:海量國際 版權所有', 'copyright']);
@@ -54,14 +54,14 @@ async function testAllFeatures() {
     console.log('\n📢 測試公告管理...');
     const announcements = [
       {
-        title: '🌊 海量國際新品上市',
-        content: '全新海洋系列電子煙隆重登場！融合深海靈感與頂級工藝，為您帶來非凡體驗。',
+        title: '🌊 HAZO國際新品上市',
+        content: '全新海洋系列產品隆重登場！融合深海靈感與頂級工藝，為您帶來非凡體驗。',
         type: 'info',
         is_active: 1
       },
       {
         title: '🐋 鯨魚限定版現正預購',
-        content: '限量發行的鯨魚主題電子煙，獨特設計與卓越品質的完美結合。預購享85折優惠！',
+        content: '限量發行的鯨魚主題產品，獨特設計與卓越品質的完美結合。預購享85折優惠！',
         type: 'promotion',
         is_active: 1
       }
@@ -122,8 +122,8 @@ async function testAllFeatures() {
     const homepageSettings = [
       {
         section: 'hero',
-        title: '海量國際 - 深海品質體驗',
-        content: '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。海量國際為您帶來最專業的產品與服務。',
+        title: 'HAZO國際 - 深海品質體驗',
+        content: '探索來自深海的純淨品質，體驗如海洋般深邃的品牌科技。HAZO國際為您帶來最專業的產品與服務。',
         image_url: '/images/ocean-logo.gif'
       },
       {
@@ -135,7 +135,7 @@ async function testAllFeatures() {
       {
         section: 'brand_story',
         title: '品牌故事',
-        content: '海量國際，卉田國際旗下子公司，專注於為全球用戶提供高品質電子煙產品。我們將海洋的純淨與深邃融入每一件產品中。',
+        content: 'HAZO國際，專注於為全球用戶提供高品質產品。我們將海洋的純淨與深邃融入每一件產品中。',
         image_url: '/images/ocean-logo.gif'
       }
     ];

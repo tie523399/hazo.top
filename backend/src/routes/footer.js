@@ -12,7 +12,7 @@ const authenticateToken = (req, res, next) => {
   }
   
   const jwt = require('jsonwebtoken');
-  const JWT_SECRET = process.env.JWT_SECRET || 'vape-store-secret-key';
+  const JWT_SECRET = process.env.JWT_SECRET || 'hazo-secret-key';
   
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {

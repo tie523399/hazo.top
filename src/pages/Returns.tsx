@@ -49,8 +49,8 @@ const Returns: React.FC = () => {
             items: [
               '商品收到後7天內，如有品質問題可申請退貨',
               '退貨商品需保持原包裝完整，未使用且無人為損壞',
-              '電子煙主機需附上所有配件及包裝盒',
-              '煙彈類產品一經拆封恕不接受退貨（品質問題除外）',
+              '商品需附上所有配件及包裝盒',
+              '特殊產品一經拆封恕不接受退貨（品質問題除外）',
               '退貨運費由消費者負擔，品質問題則由本公司承擔'
             ]
           },
@@ -66,11 +66,11 @@ const Returns: React.FC = () => {
           },
           warrantyPolicy: {
             title: '保固政策',
-            description: '電子煙主機享有保固服務：',
+            description: '產品享有保固服務：',
             items: [
-              '電子煙主機提供3個月保固',
+              '產品提供3個月保固',
               '保固期內非人為損壞可免費維修',
-              '保固不包含配件及煙彈',
+              '保固不包含配件及特殊產品',
               '保固期間需出示購買憑證'
             ]
           },
@@ -104,9 +104,9 @@ const Returns: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <SEO
-        title="退換貨政策 - HAZO 電子煙商城"
-        description="HAZO 電子煙商城退換貨政策，7天內品質問題可退換貨，電子煙主機提供3個月保固服務。詳細退換貨流程說明。"
-        keywords="退換貨政策,電子煙退貨,電子煙換貨,保固服務,退款流程,電子煙保固"
+        title="退換貨政策 - HAZO國際"
+        description="HAZO國際退換貨政策，7天內品質問題可退換貨，主機產品提供3個月保固服務。詳細退換貨流程說明。"
+        keywords="退換貨政策,產品退貨,產品換貨,保固服務,退款流程,HAZO國際"
         url="/returns"
       />
       
@@ -214,7 +214,7 @@ const Returns: React.FC = () => {
                       <div className="font-medium">
                         {item.includes('3個月') ? (
                           <>
-                            電子煙主機提供<Badge variant="outline" className="mx-1">3個月保固</Badge>
+                            產品提供<Badge variant="outline" className="mx-1">3個月保固</Badge>
                           </>
                         ) : (
                           <p>{item}</p>

@@ -25,7 +25,7 @@ const SEO: React.FC<SEOProps> = ({
   noindex = false,
   canonical
 }) => {
-  const fullTitle = title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name} 電子煙商城`;
+  const fullTitle = title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name}`;
   const fullUrl = url.startsWith('http') ? url : getFullUrl(url);
   const fullImageUrl = getFullImageUrl(image);
   const canonicalUrl = canonical || fullUrl;

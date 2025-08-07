@@ -207,8 +207,8 @@ const ProductDetail: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       <SEO
         title={product.name}
-        description={product.description || `${product.name} - ${product.brand} 品牌電子煙產品`}
-        keywords={`電子煙, ${product.brand}, ${product.name}, ${getCategoryName(product.category)}`}
+        description={product.description || `${product.name} - ${product.brand} 品牌優質產品`}
+        keywords={`HAZO國際, ${product.brand}, ${product.name}, ${getCategoryName(product.category)}`}
         structuredData={[
           createProductStructuredData(product),
           createBreadcrumbStructuredData([

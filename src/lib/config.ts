@@ -1,21 +1,21 @@
 // 網站配置
 export const siteConfig = {
   // 網站基本信息
-  name: 'HAZO',
-  title: 'HAZO 電子煙商城 - 專業電子煙線上購物平台',
-  description: 'HAZO 是台灣專業的電子煙線上商城，提供各大品牌電子煙主機、煙彈、拋棄式電子煙。正品保證，快速配送，優質售後服務。',
+  name: 'HAZO國際',
+  title: 'HAZO國際 - 專業品牌線上購物平台',
+  description: 'HAZO國際是台灣專業的品牌商城，提供各大品牌優質產品與服務。正品保證，快速配送，優質售後服務。',
   
   // 域名配置
-  domain: import.meta.env.VITE_SITE_URL || 'https://hazosp2p.top',
+  domain: import.meta.env.VITE_SITE_URL || 'https://hazo.top',
   
   // SEO配置
-  keywords: '電子煙,電子煙主機,煙彈,拋棄式電子煙,IQOS,JUUL,Vaporesso,SP2,Ilia,HTA,Lana',
+  keywords: 'HAZO國際,線上購物,品牌商品,SP2,Ilia,HTA,Lana,優質產品,專業服務',
   author: 'HAZO',
   
   // 社交媒體
   social: {
-    line: '@hazo-vape',
-    email: 'service@hazo-vape.com'
+    line: '@hazo',
+    email: 'service@hazo.top'
   },
   
   // 圖片配置
@@ -24,8 +24,8 @@ export const siteConfig = {
   
   // 聯繫信息
   contact: {
-    line: '@hazo-vape',
-    email: 'service@hazo-vape.com',
+    line: '@hazo',
+    email: 'service@hazo.top',
     hours: '週一至週五 10:00-18:00'
   }
 };

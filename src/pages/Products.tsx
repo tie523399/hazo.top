@@ -166,8 +166,8 @@ const Products: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       <SEO
         title={selectedCategory ? `${getCategoryName(selectedCategory)} - 商品列表` : '商品列表'}
-        description={`瀏覽我們的${selectedCategory ? getCategoryName(selectedCategory) : '所有'}電子煙產品`}
-        keywords={`電子煙, ${selectedCategory ? getCategoryName(selectedCategory) : '商品'}, ${selectedBrand || '品牌'}`}
+        description={`瀏覽我們的${selectedCategory ? getCategoryName(selectedCategory) : '所有'}優質產品`}
+        keywords={`HAZO國際, ${selectedCategory ? getCategoryName(selectedCategory) : '商品'}, ${selectedBrand || '品牌'}`}
         structuredData={[
           createBreadcrumbStructuredData([
             { name: '首頁', url: '/' },

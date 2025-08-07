@@ -282,7 +282,7 @@ const Footer: React.FC = () => {
               </div>
               
               <p className="text-sm leading-relaxed opacity-90">
-                {companyInfo?.content || 'HAZO 致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。'}
+                {companyInfo?.content || 'HAZO國際致力於提供最優質的產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。'}
               </p>
               
               {features.length > 0 && (

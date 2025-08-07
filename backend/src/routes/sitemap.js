@@ -13,9 +13,9 @@ router.get('/sitemap.xml', async (req, res) => {
     const staticPages = [
       { url: '/', priority: '1.0', changefreq: 'daily' },
       { url: '/products', priority: '0.9', changefreq: 'daily' },
-      { url: '/products?category=host', priority: '0.8', changefreq: 'weekly' },
-      { url: '/products?category=cartridge', priority: '0.8', changefreq: 'weekly' },
-      { url: '/products?category=disposable', priority: '0.8', changefreq: 'weekly' },
+      { url: '/products?category=electronics', priority: '0.8', changefreq: 'weekly' },
+      { url: '/products?category=accessories', priority: '0.8', changefreq: 'weekly' },
+      { url: '/products?category=lifestyle', priority: '0.8', changefreq: 'weekly' },
       { url: '/shipping', priority: '0.6', changefreq: 'monthly' },
       { url: '/returns', priority: '0.6', changefreq: 'monthly' },
       { url: '/sitemap', priority: '0.5', changefreq: 'monthly' }
@@ -95,31 +95,31 @@ router.get('/sitemap-data', async (req, res) => {
       { 
         title: '首頁', 
         url: '/', 
-        description: 'HAZO 電子煙商城首頁',
+        description: 'HAZO國際商城首頁',
         category: 'main'
       },
       { 
         title: '所有商品', 
         url: '/products', 
-        description: '瀏覽所有電子煙產品',
+        description: '瀏覽所有優質產品',
         category: 'products'
       },
       { 
-        title: '電子煙主機', 
-        url: '/products?category=host', 
-        description: '各品牌電子煙主機',
+        title: '電子產品', 
+        url: '/products?category=electronics', 
+        description: '各類電子產品',
         category: 'products'
       },
       { 
-        title: '煙彈', 
-        url: '/products?category=cartridge', 
-        description: '多種口味煙彈選擇',
+        title: '配件用品', 
+        url: '/products?category=accessories', 
+        description: '多種配件用品選擇',
         category: 'products'
       },
       { 
-        title: '拋棄式電子煙', 
-        url: '/products?category=disposable', 
-        description: '即開即用拋棄式電子煙',
+        title: '生活用品', 
+        url: '/products?category=lifestyle', 
+        description: '日常生活用品',
         category: 'products'
       },
       { 

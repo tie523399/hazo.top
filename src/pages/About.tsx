@@ -154,7 +154,7 @@ const About: React.FC = () => {
             </p>
             <div className="inline-flex flex-wrap gap-4 justify-center">
               <Badge variant="outline" className="text-sm">
-                Email: support@hazosp2p.top
+                Email: support@hazo.top
               </Badge>
               <Badge variant="outline" className="text-sm">
                 客服時間: 週一至週五 9:00-18:00

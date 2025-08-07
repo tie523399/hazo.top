@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- HAZO 電子煙商城網站地圖 -->
+<!-- HAZO國際商城網站地圖 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 主要頁面 -->
   <url>
-    <loc>https://hazosp2p.top/</loc>
+    <loc>https://hazo.top/</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- 產品頁面 -->
   <url>
-    <loc>https://hazosp2p.top/products</loc>
+    <loc>https://hazo.top/products</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -19,21 +19,21 @@
 
   <!-- 產品分類頁面 -->
   <url>
-    <loc>https://hazosp2p.top/products?category=host</loc>
+    <loc>https://hazo.top/products?category=electronics</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products?category=cartridge</loc>
+    <loc>https://hazo.top/products?category=accessories</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products?category=disposable</loc>
+    <loc>https://hazo.top/products?category=lifestyle</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -41,28 +41,28 @@
 
   <!-- 品牌頁面 -->
   <url>
-    <loc>https://hazosp2p.top/products?brand=ILIA</loc>
+    <loc>https://hazo.top/products?brand=ILIA</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products?brand=SP2</loc>
+    <loc>https://hazo.top/products?brand=SP2</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products?brand=HTA</loc>
+    <loc>https://hazo.top/products?brand=HTA</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products?brand=LANA</loc>
+    <loc>https://hazo.top/products?brand=LANA</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -70,70 +70,70 @@
 
   <!-- 產品詳情頁面 (示例) -->
   <url>
-    <loc>https://hazosp2p.top/products/1</loc>
+    <loc>https://hazo.top/products/1</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/2</loc>
+    <loc>https://hazo.top/products/2</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/3</loc>
+    <loc>https://hazo.top/products/3</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/4</loc>
+    <loc>https://hazo.top/products/4</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/5</loc>
+    <loc>https://hazo.top/products/5</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/6</loc>
+    <loc>https://hazo.top/products/6</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/7</loc>
+    <loc>https://hazo.top/products/7</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/8</loc>
+    <loc>https://hazo.top/products/8</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/9</loc>
+    <loc>https://hazo.top/products/9</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/products/10</loc>
+    <loc>https://hazo.top/products/10</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -141,21 +141,21 @@
 
   <!-- 資訊頁面 -->
   <url>
-    <loc>https://hazosp2p.top/shipping</loc>
+    <loc>https://hazo.top/shipping</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/returns</loc>
+    <loc>https://hazo.top/returns</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://hazosp2p.top/sitemap</loc>
+    <loc>https://hazo.top/sitemap</loc>
     <lastmod>2024-12-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

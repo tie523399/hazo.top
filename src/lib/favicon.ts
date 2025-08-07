@@ -39,6 +39,6 @@ export const initializeBrandSettings = (settings: {
 
   // 更新頁面標題
   if (settings.site_title) {
-    updatePageTitle(settings.site_title, '電子煙商城');
+    updatePageTitle(settings.site_title, 'HAZO國際');
   }
 };

@@ -9,22 +9,22 @@ async function setupBasicDemo() {
   try {
     // 1. 檢查並創建分類
     console.log('📁 檢查示例分類...');
-    const existingCategory = await dbAsync.get('SELECT id FROM categories WHERE slug = ?', 'host');
+    const existingCategory = await dbAsync.get('SELECT id FROM categories WHERE slug = ?', 'electronics');
     
     if (!existingCategory) {
       await dbAsync.run(
         `INSERT INTO categories (name, slug, description, display_order, is_active) 
          VALUES (?, ?, ?, ?, ?)`,
-        ['海量國際主機', 'host', '海量國際品牌主機設備', 1, 1]
+        ['電子產品', 'electronics', 'HAZO國際電子產品系列', 1, 1]
       );
-      console.log('✅ 已創建分類: 海量國際主機');
+      console.log('✅ 已創建分類: 電子產品');
     } else {
-      console.log('ℹ️ 分類已存在: 海量國際主機');
+      console.log('ℹ️ 分類已存在: 電子產品');
     }
 
     // 2. 檢查並創建商品
     console.log('📦 檢查示例商品...');
-    const existingProduct = await dbAsync.get('SELECT id FROM products WHERE name = ?', '海量國際旗艦產品');
+    const existingProduct = await dbAsync.get('SELECT id FROM products WHERE name = ?', 'HAZO國際旗艦產品');
     
     if (!existingProduct) {
       await dbAsync.run(
@@ -32,18 +32,18 @@ async function setupBasicDemo() {
           name, brand, category, description, price, stock, image_url
         ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          '海量國際旗艦產品',
-          '海量國際', 
-          'host',
-          '海量國際品牌旗艦產品，品質卓越，值得信賴。',
+          'HAZO國際旗艦產品',
+          'HAZO國際', 
+          'electronics',
+          'HAZO國際品牌旗艦產品，品質卓越，值得信賴。',
           1999,
           100,
           '/images/ocean-international.gif'
         ]
       );
-      console.log('✅ 已創建商品: 海量國際旗艦產品');
+      console.log('✅ 已創建商品: HAZO國際旗艦產品');
     } else {
-      console.log('ℹ️ 商品已存在: 海量國際旗艦產品');
+      console.log('ℹ️ 商品已存在: HAZO國際旗艦產品');
     }
 
     // 3. 統計

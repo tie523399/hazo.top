@@ -152,7 +152,7 @@ Allow: /sitemap`;
 // 根路由 - API文檔
 app.get('/api', (req, res) => {
   res.json({
-    message: '🚬 HAZO 電子煙線上商店 API',
+    message: '🌊 HAZO國際線上商店 API',
     version: '1.0.0',
     environment: NODE_ENV,
     endpoints: {
@@ -190,7 +190,7 @@ app.use('/api/*', (req, res) => {
 if (NODE_ENV !== 'production') {
   app.get('/', (req, res) => {
     res.json({
-      message: '🚬 HAZO 電子煙線上商店 API',
+      message: '🌊 HAZO國際線上商店 API',
       version: '1.0.0',
       environment: NODE_ENV,
       endpoints: {

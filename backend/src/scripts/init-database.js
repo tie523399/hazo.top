@@ -279,7 +279,7 @@ const initializeDatabase = async () => {
           image_url: '/images/ocean-logo-1.gif',
           title: '海量國際',
           subtitle: '海洋品質 • 深度體驗',
-          content: '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。海量國際為您帶來最專業的電子煙產品與服務。',
+          content: '探索來自深海的純淨品質，體驗如海洋般深邃的品牌科技。HAZO國際為您帶來最專業的產品與服務。',
           button_text: '探索產品',
           button_link: '/products',
           display_order: 1,
@@ -378,8 +378,8 @@ const initializeDatabase = async () => {
       const defaultFooterSettings = [
         {
           section: 'company_info',
-          title: '海量國際',
-          content: '海量國際致力於提供最優質的電子煙產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。',
+          title: 'HAZO國際',
+          content: 'HAZO國際致力於提供最優質的產品與服務，讓每一位顧客都能享受到最純淨、最舒適的使用體驗。',
           image_url: '/images/whale-company-logo.png',
           display_order: 1,
           is_active: 1
@@ -466,7 +466,7 @@ const initializeDatabase = async () => {
         {
           section: 'age_notice',
           title: '年齡提醒',
-          content: '本網站僅供18歲以上成年人使用。電子煙含有尼古丁，使用前請詳閱產品說明。',
+          content: '本網站僅供18歲以上成年人使用。使用前請詳閱產品說明。',
           display_order: 12,
           is_active: 1
         }
@@ -498,7 +498,7 @@ const initializeDatabase = async () => {
               {
                 step: 1,
                 title: '選擇商品',
-                description: '瀏覽我們精選的電子煙產品，加入購物車',
+                description: '瀏覽我們精選的品牌產品，加入購物車',
                 icon: 'ShoppingCart'
               },
               {
@@ -534,8 +534,8 @@ const initializeDatabase = async () => {
               items: [
                 '商品收到後7天內，如有品質問題可申請退貨',
                 '退貨商品需保持原包裝完整，未使用且無人為損壞',
-                '電子煙主機需附上所有配件及包裝盒',
-                '煙彈類產品一經拆封恕不接受退貨（品質問題除外）',
+                '商品需附上所有配件及包裝盒',
+                '特殊產品一經拆封恕不接受退貨（品質問題除外）',
                 '退貨運費由消費者負擔，品質問題則由本公司承擔'
               ]
             },
@@ -551,11 +551,11 @@ const initializeDatabase = async () => {
             },
             warrantyPolicy: {
               title: '保固政策',
-              description: '電子煙主機享有保固服務：',
+              description: '產品享有保固服務：',
               items: [
-                '電子煙主機提供3個月保固',
+                '產品提供3個月保固',
                 '保固期內非人為損壞可免費維修',
-                '保固不包含配件及煙彈',
+                '保固不包含配件及特殊產品',
                 '保固期間需出示購買憑證'
               ]
             },

@@ -12,7 +12,7 @@
 4. 選擇 "Volumes" 標籤
 5. 點擊 "Add Volume"
 6. 設置以下配置：
-   - **Volume Name**: `vape-store-data`
+   - **Volume Name**: `hazo-data`
    - **Mount Path**: `/app/data`
    - **Size**: 建議至少 1GB
 

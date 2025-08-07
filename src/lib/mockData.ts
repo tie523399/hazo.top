@@ -66,8 +66,8 @@ export const mockCoupons: Coupon[] = [
 export const mockAnnouncements: Announcement[] = [
   {
     id: 1,
-    title: '歡迎來到電子煙專賣店',
-    content: '我們提供各種品牌的高品質電子煙產品，歡迎選購！',
+    title: '歡迎來到HAZO國際',
+    content: '我們提供各種品牌的高品質產品，歡迎選購！',
     type: 'info',
     is_active: true,
     created_at: new Date().toISOString()
@@ -83,7 +83,7 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 3,
     title: '健康提醒',
-    content: '請注意：電子煙產品含有尼古丁，未成年人禁止使用。',
+    content: '請注意：產品僅供成年人使用，未成年人禁止使用。',
     type: 'warning',
     is_active: true,
     created_at: new Date().toISOString()

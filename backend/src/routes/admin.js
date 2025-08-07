@@ -16,7 +16,7 @@ const {
   getDatabaseStats 
 } = require('../scripts/backup-system');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'vape-store-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'hazo-secret-key';
 
 // 圖片上傳目錄 - 根據環境選擇正確路徑
 const NODE_ENV = process.env.NODE_ENV || 'development';

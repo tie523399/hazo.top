@@ -158,9 +158,9 @@ const Home: React.FC = () => {
   return (
     <>
       <SEO
-        title="HAZO 電子煙商城 - 台灣優質電子煙專賣店"
-        description="HAZO電子煙商城提供高品質電子煙產品，包含主機、煙彈、一次性電子煙等。正品保證、快速配送、專業售後服務。"
-        keywords="電子煙,電子菸,VAPE,煙彈,一次性電子煙,電子煙主機,台灣電子煙,HAZO"
+        title="HAZO國際 - 台灣優質品牌專賣店"
+        description="HAZO國際提供高品質品牌產品與專業服務。正品保證、快速配送、專業售後服務。"
+        keywords="HAZO國際,品牌商品,優質產品,專業服務,線上購物,台灣品牌"
         url="/"
         structuredData={createOrganizationStructuredData()}
       />
@@ -186,7 +186,7 @@ const Home: React.FC = () => {
                 {homepageSettings.hero?.subtitle || '海洋品質 • 深度體驗'}
               </p>
               <p className="text-lg md:text-xl mb-10 opacity-80 max-w-3xl mx-auto leading-relaxed animate-fade-in-delay-2">
-                {homepageSettings.hero?.content || '探索來自深海的純淨品質，體驗如海洋般深邃的電子煙科技。HAZO 為您帶來最專業的電子煙產品與服務。'}
+                {homepageSettings.hero?.content || '探索來自深海的純淨品質，體驗如海洋般深邃的品牌科技。HAZO國際為您帶來最專業的產品與服務。'}
               </p>
               <button
                 onClick={() => navigate('/products')}
@@ -249,7 +249,7 @@ const Home: React.FC = () => {
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">精選產品系列</h2>
-                <p className="text-lg text-gray-600">探索我們的專業電子煙產品系列</p>
+                <p className="text-lg text-gray-600">探索我們的專業產品系列</p>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -299,7 +299,7 @@ const Home: React.FC = () => {
               準備好開始您的HAZO體驗了嗎？
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              立即瀏覽我們的產品系列，享受專業的電子煙體驗
+              立即瀏覽我們的產品系列，享受專業的品牌體驗
             </p>
             <button
               onClick={() => navigate('/products')}
@@ -327,7 +327,7 @@ const Home: React.FC = () => {
                   className="w-20 h-20 mx-auto mb-4"
                 />
                 <p className="text-gray-700 text-lg leading-relaxed">
-                  本網站販售的電子煙產品僅供<span className="font-bold text-red-600">18歲以上</span>成年人使用
+                  本網站販售的產品僅供<span className="font-bold text-red-600">18歲以上</span>成年人使用
                 </p>
                 <p className="text-gray-600 mt-2">
                   請確認您已滿18歲

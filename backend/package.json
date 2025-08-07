@@ -1,7 +1,7 @@
 {
-  "name": "vape-store-backend",
+  "name": "hazo-backend",
   "version": "1.0.0",
-  "description": "電子煙線上商店後端API",
+  "description": "HAZO 線上商店後端API",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

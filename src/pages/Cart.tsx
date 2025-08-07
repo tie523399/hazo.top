@@ -274,7 +274,7 @@ const Cart: React.FC = () => {
       <SEO
         title="購物車"
         description="查看您的購物車內容，調整商品數量並結帳"
-        keywords="購物車, 結帳, 電子煙"
+        keywords="購物車, 結帳, HAZO國際"
       />
 
       <div className="container mx-auto px-4 py-4 md:py-8">

@@ -1,6 +1,6 @@
-# 🌊 Hazo 電子煙商城 - 全端電商平台
+# 🌊 HAZO 商城 - 全端電商平台
 
-一個現代化的電子煙商城系統，採用 React + Node.js 全端技術堆棧，提供完整的電商功能和管理後台。
+一個現代化的線上商城系統，採用 React + Node.js 全端技術堆棧，提供完整的電商功能和管理後台。
 
 ## ✨ 功能特色
 
@@ -135,7 +135,7 @@ npm run dev:backend   # 後端: http://localhost:3001
 
 1. 連接 GitHub 倉庫到 Railway
 2. 設置環境變數
-3. 自動部署: `https://hazosp2p.top`
+3. 自動部署: `https://hazo.top`
 
 ### 手動部署
 ```bash
@@ -246,4 +246,4 @@ MIT License - 詳見 [LICENSE](LICENSE) 文件。
 
 ---
 
-**🌊 Hazo 電子煙商城** - 打造最佳的電商體驗
+**🌊 HAZO 商城** - 打造最佳的電商體驗
