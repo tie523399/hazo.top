@@ -9,7 +9,7 @@
     "restartPolicyMaxRetries": 10
   },
   "variables": {
-    "DATABASE_PATH": "/app/data/vape_store.db",
+    "DATABASE_PATH": "/app/data/hazo_store.db",
     "NODE_ENV": "production",
     "BACKUP_INTERVAL_HOURS": "6"
   }
