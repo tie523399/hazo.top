@@ -49,7 +49,7 @@ const BackupManagement: React.FC = () => {
   // 載入備份列表
   const loadBackups = async () => {
     try {
-      const response = await adminAPI.get('/admin/backup/list');
+      const response = await adminAPI.getBackupList();
       setBackups(response.data.backups || []);
     } catch (error: any) {
       console.error('載入備份列表失敗:', error);
@@ -64,7 +64,7 @@ const BackupManagement: React.FC = () => {
   // 載入數據庫統計
   const loadStats = async () => {
     try {
-      const response = await adminAPI.get('/admin/backup/stats');
+      const response = await adminAPI.getDatabaseStats();
       setStats(response.data.stats);
     } catch (error: any) {
       console.error('載入統計失敗:', error);
@@ -80,7 +80,7 @@ const BackupManagement: React.FC = () => {
   const checkIntegrity = async () => {
     setLoading(true);
     try {
-      const response = await adminAPI.get('/admin/backup/check-integrity');
+      const response = await adminAPI.checkDatabaseIntegrity();
       setIsIntegrityValid(response.data.isValid);
       toast({
         title: response.data.isValid ? "檢查通過" : "檢查失敗",
@@ -103,7 +103,7 @@ const BackupManagement: React.FC = () => {
   const createBackup = async () => {
     setLoading(true);
     try {
-      const response = await adminAPI.post('/admin/backup/create');
+      const response = await adminAPI.createBackup();
       toast({
         title: "備份成功",
         description: `備份文件已創建: ${response.data.backupPath}`,
@@ -129,8 +129,8 @@ const BackupManagement: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await adminAPI.post('/admin/backup/restore', {
-        backupFileName
+      const response = await adminAPI.restoreBackup({
+        fileName: backupFileName
       });
       
       toast({

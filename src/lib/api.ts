@@ -363,7 +363,14 @@ export const adminAPI = {
   deleteProductImage: (productId: number, imageId: number) => 
     api.delete(`/admin/products/${productId}/images/${imageId}`),
   reorderProductImages: (productId: number, imageOrders: Array<{id: number, display_order: number}>) =>
-    api.put(`/admin/products/${productId}/images/reorder`, { imageOrders })
+    api.put(`/admin/products/${productId}/images/reorder`, { imageOrders }),
+
+  // 備份管理API
+  getBackupList: () => api.get('/admin/backup/list'),
+  getDatabaseStats: () => api.get('/admin/backup/stats'),
+  checkDatabaseIntegrity: () => api.get('/admin/backup/integrity'),
+  createBackup: () => api.post('/admin/backup/create'),
+  restoreBackup: (data: { fileName: string }) => api.post('/admin/backup/restore', data)
 };
 
 // 系統設置相關API (公開)
