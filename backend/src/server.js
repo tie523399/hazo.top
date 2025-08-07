@@ -23,6 +23,7 @@ const homepageRouter = require('./routes/homepage');
 const footerRouter = require('./routes/footer');
 const cvsRouter = require('./routes/cvs');
 const pageContentsRouter = require('./routes/page-contents');
+const setupRouter = require('./routes/setup');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -99,6 +100,7 @@ app.use('/api/homepage', homepageRouter);
 app.use('/api/footer', footerRouter);
 app.use('/api/cvs', cvsRouter);
 app.use('/api/page-contents', pageContentsRouter);
+app.use('/api/setup', setupRouter);
 app.use('/api', sitemapRouter);
 
 // 靜態文件服務 - 在API路由之後
