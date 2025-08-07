@@ -1,0 +1,41 @@
+{
+  "name": "HAZO國際電商平台",
+  "description": "專業的通用電商平台，支持任何產品銷售",
+  "repository": "https://github.com/tie523399/hazo.top",
+  "keywords": [
+    "ecommerce",
+    "nodejs",
+    "react",
+    "typescript",
+    "hazo"
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "DATABASE_PATH": {
+      "description": "Database file path",
+      "value": "/app/data/hazo_store.db"
+    },
+    "JWT_SECRET": {
+      "description": "JWT secret key for authentication",
+      "generator": "secret"
+    },
+    "FRONTEND_URL": {
+      "description": "Frontend URL",
+      "value": "https://hazo.top"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "hobby"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/railwayapp/nixpacks"
+    }
+  ]
+}
