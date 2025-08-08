@@ -168,28 +168,12 @@ const AdminPage: React.FC = () => {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSetting[]>([]);
   const [pageContents, setPageContents] = useState<any[]>([]);
 
-  // --- Data Fetching & Auth ---
-  const fetchAllData = useCallback(async () => {
-    // 再次確認認證狀態
-    const token = localStorage.getItem('admin_token');
-    if (!token || !isAuthenticated) {
-      console.log('⚠️ 未認證，停止載入數據');
-      setLoading(false);
-      return;
-    }
-    
-    // 防止重複請求
-    if (loading) {
-      console.log('⏳ 數據正在載入中，跳過重複請求');
-      return;
-    }
-    
-    setLoading(true);
+  // 分離的獨立數據載入函數，避免循環依賴
+  const loadAdminData = async () => {
     console.log('📊 開始載入管理面板數據...');
     try {
-      const [stats, imgs, prods, coups, ancs, adms, sets, cats, homes, pageContentList] = await Promise.all([
+      const [stats, prods, coups, ancs, adms, sets, cats, homes, pageContentList] = await Promise.all([
         getDashboardStats(), 
-        getImages(), 
         adminAPI.getProducts({ limit: 1000 }),
         adminAPI.getCoupons(), 
         adminAPI.getAnnouncements(), 
@@ -201,7 +185,6 @@ const AdminPage: React.FC = () => {
       ]);
       
       setDashboardData(stats || {});
-      setImages(imgs?.success && Array.isArray(imgs?.images) ? imgs.images : []);
       setProducts(Array.isArray(prods?.data?.products) ? prods.data.products : Array.isArray(prods?.data) ? prods.data : []);
       setCoupons(Array.isArray(coups?.data) ? coups.data : []);
       setAnnouncements(Array.isArray(ancs?.data) ? ancs.data : []);
@@ -223,15 +206,50 @@ const AdminPage: React.FC = () => {
       if (err.response?.status === 401) { 
         console.log('⚠️ 管理面板載入時收到401，登出用戶');
         logout(); 
-        // 不再強制重新導航，避免循環
       } else {
-        // 其他錯誤的處理
         console.error('非認證錯誤:', err.message);
       }
-    } finally { 
-      setLoading(false); 
     }
-  }, [logout, navigate, isAuthenticated, loading]);
+  };
+
+  // 分離的圖片載入函數，避免與其他數據競爭
+  const loadImages = async () => {
+    try {
+      console.log('📷 載入圖片列表...');
+      const imgs = await getImages();
+      if (imgs?.success && Array.isArray(imgs?.images)) {
+        setImages(imgs.images);
+        console.log('✅ 圖片列表載入成功:', imgs.images.length, '張');
+      } else {
+        console.error('圖片列表格式錯誤:', imgs);
+        setImages([]);
+      }
+    } catch (error: any) {
+      console.error('載入圖片列表失敗:', error);
+      setImages([]);
+    }
+  };
+
+  // 統一的數據刷新函數
+  const fetchAllData = useCallback(async () => {
+    // 再次確認認證狀態
+    const token = localStorage.getItem('admin_token');
+    if (!token || !isAuthenticated) {
+      console.log('⚠️ 未認證，停止載入數據');
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
+    
+    // 分別載入數據和圖片，避免衝突
+    await Promise.all([
+      loadAdminData(),
+      loadImages()
+    ]);
+    
+    setLoading(false);
+  }, [logout, isAuthenticated]);
   
   // --- Effects ---
   useEffect(() => {
@@ -295,6 +313,16 @@ const AdminPage: React.FC = () => {
       toast({ title: '載入變體失敗', variant: 'destructive' });
     }
   };
+
+  // 統一的圖片刷新函數（提供給子組件）
+  const refreshImages = useCallback(async () => {
+    await loadImages();
+  }, []);
+
+  // 統一的數據刷新函數（不包含圖片，避免衝突）
+  const refreshData = useCallback(async () => {
+    await loadAdminData();
+  }, []);
   // --- Render ---
   if (loading && !isAuthenticated) {
     return (
@@ -520,9 +548,9 @@ const AdminPage: React.FC = () => {
           <AdminDashboard
             dashboardData={dashboardData}
             images={images}
-            setImages={setImages}
             uploading={uploading}
             setUploading={setUploading}
+            onRefreshImages={refreshImages}
           />
         </TabsContent>
         
@@ -530,19 +558,19 @@ const AdminPage: React.FC = () => {
           <HomepageManagement
             homepageSettings={homepageSettings}
             images={images}
-            setImages={setImages}
             uploading={uploading}
             setUploading={setUploading}
-            onFetchData={fetchAllData}
+            onFetchData={refreshData}
+            onRefreshImages={refreshImages}
           />
         </TabsContent>
 
         <TabsContent value="footer" className="mt-6">
           <FooterManagement
             images={images}
-            setImages={setImages}
             uploading={uploading}
             setUploading={setUploading}
+            onRefreshImages={refreshImages}
           />
         </TabsContent>
         

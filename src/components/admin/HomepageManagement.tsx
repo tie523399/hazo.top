@@ -39,19 +39,19 @@ interface Feature {
 interface HomepageManagementProps {
   homepageSettings: HomepageSetting[];
   images: ImageFile[];
-  setImages: (images: ImageFile[]) => void;
   uploading: boolean;
   setUploading: (uploading: boolean) => void;
   onFetchData: () => void;
+  onRefreshImages: () => Promise<void>;
 }
 
 const HomepageManagement: React.FC<HomepageManagementProps> = ({
   homepageSettings,
   images,
-  setImages,
   uploading,
   setUploading,
-  onFetchData
+  onFetchData,
+  onRefreshImages
 }) => {
   const { toast } = useToast();
   const homepageFileInputRef = useRef<HTMLInputElement>(null);
@@ -95,12 +95,19 @@ const HomepageManagement: React.FC<HomepageManagementProps> = ({
       const data = await uploadImage(file);
       setHomepageForm(prev => ({...prev, image_url: data.filePath}));
       toast({ title: "上傳成功", description: "圖片已設置到首頁" });
-      const imgs = await getImages();
-      setImages(imgs?.success && Array.isArray(imgs?.images) ? imgs.images : []);
+      
+      // 使用統一的圖片刷新函數
+      await onRefreshImages();
+      console.log('📷 使用統一函數刷新圖片列表');
     } catch (err: any) {
+      console.error('首頁圖片上傳失敗:', err);
       toast({ title: '上傳失敗', description: err.message, variant: 'destructive' });
     } finally {
       setUploading(false);
+      // 清除文件輸入，避免重複上傳
+      if (homepageFileInputRef.current) {
+        homepageFileInputRef.current.value = '';
+      }
     }
   };
 

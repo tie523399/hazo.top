@@ -269,16 +269,46 @@ router.get('/images', authenticateToken, (req, res) => {
       return res.status(500).json({ success: false, message: '無法讀取圖片目錄' });
     }
 
-    // 過濾掉非圖片或系統文件 (例如 .DS_Store)
-    const imageFiles = (files || []).filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(ext);
-    }).map(file => ({
-      name: file,
-      path: `/images/${file}`
-    }));
+    // 過濾掉非圖片或系統文件，並獲取文件統計信息
+    const imageFiles = [];
+    const seenFiles = new Set(); // 去重
 
-    res.json({ success: true, images: imageFiles.reverse() }); // 讓最新的在最前面
+    (files || []).forEach(file => {
+      const ext = path.extname(file).toLowerCase();
+      const filePath = path.join(imagesDir, file);
+      
+      // 檢查是否為圖片且未重複
+      if (['.png', '.jpg', '.jpeg', '.gif', '.webp'].includes(ext) && !seenFiles.has(file)) {
+        seenFiles.add(file);
+        
+        try {
+          const stats = fs.statSync(filePath);
+          imageFiles.push({
+            name: file,
+            path: `/images/${file}`,
+            size: stats.size,
+            mtime: stats.mtime,
+            created: stats.birthtime || stats.ctime
+          });
+        } catch (statErr) {
+          console.warn(`無法獲取文件 ${file} 的統計信息:`, statErr);
+          // 如果無法獲取統計信息，仍然包含文件但不帶時間信息
+          imageFiles.push({
+            name: file,
+            path: `/images/${file}`,
+            size: 0,
+            mtime: new Date(),
+            created: new Date()
+          });
+        }
+      }
+    });
+
+    // 按創建時間排序，最新的在前面
+    imageFiles.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+
+    console.log(`📷 圖片列表 API - 找到 ${imageFiles.length} 個圖片文件`);
+    res.json({ success: true, images: imageFiles });
   });
 });
 

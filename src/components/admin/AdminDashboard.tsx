@@ -39,17 +39,17 @@ interface ImageFile {
 interface AdminDashboardProps {
   dashboardData: DashboardData | null;
   images: ImageFile[];
-  setImages: (images: ImageFile[]) => void;
   uploading: boolean;
   setUploading: (uploading: boolean) => void;
+  onRefreshImages: () => Promise<void>;
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
   dashboardData,
   images,
-  setImages,
   uploading,
-  setUploading
+  setUploading,
+  onRefreshImages
 }) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,12 +63,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     try {
       const data = await uploadImage(file);
       toast({ title: "上傳成功", description: data.filePath });
-      const imgs = await getImages();
-      setImages(imgs?.success && Array.isArray(imgs?.images) ? imgs.images : []);
+      
+      // 使用統一的圖片刷新函數
+      await onRefreshImages();
+      console.log('📷 使用統一函數刷新圖片列表');
     } catch (err: any) {
+      console.error('圖片上傳失敗:', err);
       toast({ title: '上傳失敗', description: err.message, variant: 'destructive' });
     } finally {
       setUploading(false);
+      // 清除文件輸入，避免重複上傳
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -84,9 +91,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     try {
       await deleteImage(filename);
       toast({ title: "刪除成功", description: `圖片 ${filename} 已刪除` });
-      const imgs = await getImages();
-      setImages(imgs?.success && Array.isArray(imgs?.images) ? imgs.images : []);
+      
+      // 使用統一的圖片刷新函數
+      await onRefreshImages();
+      console.log('📷 使用統一函數刷新圖片列表');
     } catch (err: any) {
+      console.error('圖片刪除失敗:', err);
       toast({ title: '刪除失敗', description: err.message, variant: 'destructive' });
     }
   };
@@ -214,8 +224,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <h3 className="font-medium my-4">現有圖片列表</h3>
             <ScrollArea className="h-96 w-full rounded-md border">
               <div className="p-4">
-                {(Array.isArray(images) ? images : []).map(img => (
-                  <div key={img.name} className="flex items-center gap-3 p-2 rounded-md border hover:bg-muted mb-2">
+                {(Array.isArray(images) ? images : []).map((img, index) => (
+                  <div key={`${img.name}-${index}`} className="flex items-center gap-3 p-2 rounded-md border hover:bg-muted mb-2">
                     {/* 操作按鈕 */}
                     <div className="flex gap-1 flex-shrink-0">
                       <Button
@@ -258,6 +268,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <p className="text-xs text-muted-foreground truncate" title={img.path}>
                         {img.path}
                       </p>
+                      {img.size && (
+                        <p className="text-xs text-muted-foreground">
+                          {(img.size / 1024).toFixed(1)} KB
+                          {img.created && ` • ${new Date(img.created).toLocaleDateString()}`}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}
