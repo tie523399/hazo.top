@@ -247,20 +247,83 @@ async function setupCompleteData() {
     console.log('\n🏠 創建首頁設置...');
     const homepageSettings = [
       {
-        section: 'hero',
-        title: 'HAZO國際',
-        subtitle: '品質生活 • 精選好物',
-        content: '探索HAZO國際精選商品，為您帶來最優質的購物體驗。每一件商品都經過嚴格挑選，只為給您最好的。',
-        image_url: '/images/hero-banner.jpg',
-        button_text: '開始購物',
-        button_link: '/products'
+        section: 'hero_main',
+        title: 'HAZO國際 主圖',
+        subtitle: '首頁主要展示圖片',
+        content: '首頁輪播主圖設置',
+        image_url: '/images/ocean-international.gif',
+        button_text: null,
+        button_link: null,
+        display_order: 0
       },
       {
-        section: 'featured_products',
-        title: '精選推薦',
-        subtitle: '為您精心挑選',
-        content: '每週更新的精選商品，品質保證，優惠價格。',
-        image_url: '/images/featured-banner.jpg'
+        section: 'hero',
+        title: 'HAZO國際',
+        subtitle: '海洋品質 • 深度體驗',
+        content: '探索來自深海的純淨品質，體驗如海洋般深邃的品牌科技。HAZO國際為您帶來最專業的產品與服務。',
+        image_url: '/images/oceanic-international-logo.png',
+        button_text: '探索產品',
+        button_link: '/products',
+        display_order: 1
+      },
+      {
+        section: 'hero1',
+        title: 'HAZO品質',
+        subtitle: '極致工藝，完美體驗',
+        content: '採用航空級品質標準，結合先進的技術工藝，為您帶來最純淨的產品體驗。每一個細節都是品質的保證。',
+        image_url: '/images/whale-design.gif',
+        button_text: '立即探索',
+        button_link: '/products',
+        display_order: 2
+      },
+      {
+        section: 'hero2',
+        title: '國際品牌',
+        subtitle: '時尚設計，品味生活',
+        content: '融合現代美學與頂尖科技，HAZO國際不僅提供優質產品，更是您生活品味的象徵。精工細作，只為懂得品味的您。',
+        image_url: '/images/whale-logo.png',
+        button_text: '立即探索',
+        button_link: '/products',
+        display_order: 3
+      },
+      {
+        section: 'features',
+        title: '特色功能',
+        subtitle: '我們的服務特色',
+        content: JSON.stringify([
+          {
+            icon: 'Zap',
+            title: '極速配送',
+            description: '24小時內快速配送，讓您儘快享受',
+            gradient: 'from-amber-400 to-orange-500',
+            delay: '0ms'
+          },
+          {
+            icon: 'Shield',
+            title: '品質保證',
+            description: '正品保證，所有產品均通過品質檢測',
+            gradient: 'from-emerald-400 to-teal-500',
+            delay: '100ms'
+          },
+          {
+            icon: 'Truck',
+            title: '免費配送',
+            description: '滿額免運費，全台配送服務',
+            gradient: 'from-blue-400 to-cyan-500',
+            delay: '200ms'
+          },
+          {
+            icon: 'HeartHandshake',
+            title: '售後服務',
+            description: '專業客服團隊，提供完善售後服務',
+            gradient: 'from-pink-400 to-rose-500',
+            delay: '300ms'
+          }
+        ]),
+        image_url: null,
+        button_text: null,
+        button_link: null,
+        display_order: 4
       }
     ];
 
@@ -272,7 +335,7 @@ async function setupCompleteData() {
            (section, title, subtitle, content, image_url, button_text, button_link, display_order, is_active) 
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [setting.section, setting.title, setting.subtitle, setting.content, 
-           setting.image_url, setting.button_text, setting.button_link, 1, 1]
+           setting.image_url, setting.button_text, setting.button_link, setting.display_order || 0, 1]
         );
         console.log(`✅ 創建首頁設置: ${setting.section}`);
       }
